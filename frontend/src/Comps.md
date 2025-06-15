@@ -1,0 +1,1 @@
+backgroun blue ->  background-image: linear-gradient(to left top, #0f1527, #161d31, #1e253c, #252e47, #2d3752, #2d3752, #2c3651, #2c3651, #242d45, #1c2439, #141b2e, #0c1223);

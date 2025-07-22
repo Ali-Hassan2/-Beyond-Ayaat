@@ -1,15 +1,13 @@
-import React from 'react'
-import Landing from '../Components/Landing'
-import Home2 from '../Components/Home2'
-import Home3 from '../Components/Home3'
+import React from "react";
+import { Navbar, Home2, Home3, Landing } from "../Components/HomeComponents";
 function Home() {
   return (
     <div>
-      <Landing/>
-      <Home2 title={"How its Works"}/>
-      <Home3/>
+      <Landing />
+      <Home2 title={"How its Works"} />
+      <Home3 />
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

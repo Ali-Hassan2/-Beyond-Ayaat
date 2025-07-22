@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
-import one from '../assets/one.jpg';
-import two from '../assets/two.jpg';
-import thre from '../assets/thre.jpg';
-import four from '../assets/four.jpg';
-import five from '../assets/fiv.jpg';
-import si from '../assets/si.jpg';
+import React, { useEffect, useState } from "react";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import one from "../../assets/Home3-Assets/one.jpg";
+import two from "../../assets/Home3-Assets/two.jpg";
+import thre from "../../assets/Home3-Assets/thre.jpg";
+import four from "../../assets/Home3-Assets/four.jpg";
+import five from "../../assets/Home3-Assets/fiv.jpg";
+import si from "../../assets/Home3-Assets/si.jpg";
 
 function Home3() {
   const images = [
-    { src: one, text: 'Uncover Divine Wisdom in Every Verse' },
-    { src: two, text: 'Discover the Science Within the Qur’an' },
-    { src: thre, text: 'Explore the Hidden Signs of Creation' },
-    { src: four, text: 'Journey Through Revelation & Reality' },
-    { src: five, text: 'Illuminate Your Mind with Truth' },
-    { src: si, text: 'Beyond Ayaat: A Path to Understanding' },
+    { src: one, text: "Uncover Divine Wisdom in Every Verse" },
+    { src: two, text: "Discover the Science Within the Qur’an" },
+    { src: thre, text: "Explore the Hidden Signs of Creation" },
+    { src: four, text: "Journey Through Revelation & Reality" },
+    { src: five, text: "Illuminate Your Mind with Truth" },
+    { src: si, text: "Beyond Ayaat: A Path to Understanding" },
   ];
 
   const [current, setCurrent] = useState(0);
@@ -27,7 +27,8 @@ function Home3() {
   }, [images.length]);
 
   const goNext = () => setCurrent((prev) => (prev + 1) % images.length);
-  const goPrev = () => setCurrent((prev) => (prev - 1 + images.length) % images.length);
+  const goPrev = () =>
+    setCurrent((prev) => (prev - 1 + images.length) % images.length);
 
   return (
     <div className="w-full h-[100vh] overflow-hidden relative">
@@ -70,4 +71,4 @@ function Home3() {
   );
 }
 
-export default Home3;
+export { Home3 };

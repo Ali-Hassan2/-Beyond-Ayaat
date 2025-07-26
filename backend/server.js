@@ -4,6 +4,9 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { connectDB, disconnectDB } = require("./Config/db");
 const colors = require("colors");
+const userRouter = require("./Routes/userRoute");
+const adminRouter = require("./Routes/adminRoute");
+const topicRouter = require("./Routes/topicRoute");
 const app = express();
 dotenv.config();
 
@@ -12,6 +15,11 @@ const port = process.env.PORT || 3005;
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+
+// routes
+app.use("/user", userRouter);
+app.use("/admin", adminRouter);
+app.use("/topics", topicRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello this is the / route.");

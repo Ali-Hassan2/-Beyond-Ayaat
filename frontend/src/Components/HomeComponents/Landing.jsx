@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar } from "./Navbar";
-import LandingBoxes from "./LandingBoxes";
+import { LandingBoxes }from "./LandingBoxes";
 import { IoMdTimer } from "react-icons/io";
 import { FaEarthAfrica } from "react-icons/fa6";
 import { TbGalaxy } from "react-icons/tb";

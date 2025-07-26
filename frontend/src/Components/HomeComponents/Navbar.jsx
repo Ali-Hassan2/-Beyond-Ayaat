@@ -27,10 +27,10 @@ function Navbar() {
         </h4>
         <div className="flex  gap-5">
           <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg bg-transparent">
-            <Link to="/login">Login</Link>
+            <Link to="/signin">Signin</Link>
           </button>
           <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg  bg-[#48AFB6] ">
-            <Link to="/login">Sign up</Link>
+            <Link to="/signup">Signup</Link>
           </button>
         </div>
       </div>

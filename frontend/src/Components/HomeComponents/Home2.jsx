@@ -26,7 +26,7 @@ function Home2(props) {
     {
       image: <FaSearch size={50} />,
       label: "Explore Ayahs",
-      description: "Read Quranic Ayahs with deep meanings and transliteration.",
+      description: "Read Quranic Ayahs with deep meanings and translations in depth.",
     },
     {
       image: <TbMicroscope size={50} />,

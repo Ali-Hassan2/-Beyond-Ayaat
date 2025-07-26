@@ -1,6 +1,7 @@
 const Admin = require("../Models/admin-model");
 const dotenv = require("dotenv");
-const z = require("zod");
+const adminvalidationSchema = require("../Validations/admin.validation");
+const sendResponse = require("../Utils/send-response"); // 👈 Fixed import
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 dotenv.config();
@@ -10,101 +11,65 @@ const adminSignup = async (req, res) => {
   const last_name = req.body?.last_name;
   const email = req.body?.email;
   const password = req.body?.password;
-
-  const validation_data = z.object({
-    first_name: z
-      .string()
-      .min(3, { message: "The first name should be 3 chars" }),
-    last_name: z.string().min(3, {
-      message: "The last name should be 3 chars.",
-    }),
-    email: z.string().email(),
-    password: z.string().min(6, {
-      message: "Password should be atleast 6 chats long.",
-    }),
-  });
-
-  const validation = validation_data.safeParse(req.body);
+  const validation = adminvalidationSchema.safeParse(req.body);
   if (!validation.success) {
-    return res.status(402).send({
-      success: false,
-      message: "Please validate your inputs",
-      errors: validation.error.issues.map((err) => err?.message),
-    });
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate your inputs",
+      null,
+      validation.error.issues.map((err) => err?.message)
+    );
   }
 
   try {
     if (!first_name || !last_name || !email || !password) {
-      return res.status(404).json({
-        success: false,
-        message: "Cannot create the admin. Input is Incomplete",
-      });
+      return sendResponse(res, 400, false, "Incomplete input");
     }
-    const admin = await Admin.findOne({ email: email });
-    if (admin) {
-      return res.status(400).json({
-        message: "Admin already exist",
-        admin: admin,
+
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return sendResponse(res, 400, false, "Admin already exists", {
+        admin: existingAdmin,
       });
     }
 
-    const hashedpassword = await bcrypt.hash(password, 10);
-    const payload = {
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      password: hashedpassword,
-    };
-    const new_Admin = new Admin(payload);
-    new_Admin.save();
-    return res.status(200).json({
-      success: false,
-      message: "Admin created Successfully",
-      admin: new_Admin,
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const payload = { first_name, last_name, email, password: hashedPassword };
+    const newAdmin = await Admin.create(payload);
+
+    return sendResponse(res, 201, true, "Admin created successfully", {
+      admin: newAdmin,
     });
   } catch (error) {
-    console.log("There is an issue while creating the admin", error);
-    return res.status(500).json({
-      success: false,
-      message: "There is an issue",
-      error: error?.message,
-    });
+    console.error("Admin creation error:", error);
+    return sendResponse(res, 500, false, "Internal server error", null, [
+      error.message,
+    ]);
   }
 };
 
 const adminLogin = async (req, res) => {
-  const email = req.body?.email;
-  const password = req.body?.password;
+  const { email, password } = req.body;
+
   try {
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "There is an issue. Please complete the input",
-      });
+      return sendResponse(res, 400, false, "Email and password are required");
     }
 
-    const admin = await Admin.findOne({ email: email });
+    const admin = await Admin.findOne({ email });
     if (!admin) {
-      return res.status(401).send({
-        success: false,
-        message: "Admin not found",
-      });
+      return sendResponse(res, 401, false, "Admin not found");
     }
-    console.log("The password we got is:", password);
-    const hashing = await bcrypt.hash(password, 10);
-    console.log("The hasing is:", hashing);
-    const ispassword_match = await bcrypt.compare(password, admin?.password);
-    if (!ispassword_match) {
-      return res.status(402).send({
-        success: false,
-        message: "Invalid credentials",
-      });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return sendResponse(res, 401, false, "Invalid credentials");
     }
 
     const token = jwt.sign(
-      {
-        id: admin?._id?.toString(),
-      },
+      { id: admin._id.toString() },
       process.env.JWT_PASSWORD,
       {
         expiresIn: "365d",
@@ -112,7 +77,7 @@ const adminLogin = async (req, res) => {
     );
 
     const cookiesOptions = {
-      expires: new Date(Date.now() + 24 * 60 * 100),
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
@@ -120,25 +85,18 @@ const adminLogin = async (req, res) => {
 
     res.cookie("jwt", token, cookiesOptions);
 
-    return res.status(200).send({
-      success: false,
-      message: "Login Successfull",
+    return sendResponse(res, 200, true, "Login successful", {
       admin: {
         _id: admin?._id,
         first_name: admin?.first_name,
         last_name: admin?.last_name,
         email: admin?.email,
-        password: admin?.password,
       },
       token,
     });
   } catch (error) {
-    console.log("There is an error while login the user in:", error);
-    return res.status(500).send({
-      success: false,
-      message: "Login failrd",
-      error: error?.message,
-    });
+    console.error("Login error:", error);
+    return sendResponse(res, 500, false, "Login failed", null, [error.message]);
   }
 };
 

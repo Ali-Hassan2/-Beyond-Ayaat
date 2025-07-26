@@ -11,6 +11,9 @@ const topicSchema = new mongoose.model(
       description: {
         type: String,
       },
+      icon: {
+        type: String,
+      },
     },
     { timestamps: true }
   )

@@ -1,0 +1,84 @@
+/* Background with Quranic theme */
+.signup-container {
+  min-height: 100vh;
+  background-image: url('../../assets/Home3-Assets/one.jpg'); /* Replace with your own or keep this */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+}
+
+/* Card container */
+.signup-card {
+  background-color: rgb(158, 148, 148);
+  border-radius: 15px;
+  padding: 40px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+/* Title and subtitle */
+.signup-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #276268;
+}
+
+.signup-subtitle {
+  font-size: 14px;
+  margin-bottom: 30px;
+  color: #000000;
+}
+
+/* Form inputs */
+.signup-form input {    
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #CBD5E0;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #F7FAFC;
+}
+
+/* Button */
+.signup-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #349fa7;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+  background-color: #1b4447;
+}
+
+/* Login link */
+.login-link {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #2D3748;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #096672;
+  text-decoration: none;
+  font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}

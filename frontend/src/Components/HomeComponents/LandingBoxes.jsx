@@ -28,4 +28,4 @@ function LandingBoxes({ box }) {
   );
 }
 
-export default LandingBoxes;
+export { LandingBoxes };

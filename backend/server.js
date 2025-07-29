@@ -2,11 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const { connectDB, disconnectDB } = require("./Config/db");
 const colors = require("colors");
+const cookieParser = require("cookie-parser");
+const cloudinary = require("cloudinary").v2;
+const fileUpload = require("express-fileupload");
+const { connectDB, disconnectDB } = require("./Config/db");
 const userRouter = require("./Routes/userRoute");
 const adminRouter = require("./Routes/adminRoute");
 const topicRouter = require("./Routes/topicRoute");
+const subtopicRouter = require("./Routes/subtopics");
 const app = express();
 dotenv.config();
 
@@ -15,12 +19,30 @@ const port = process.env.PORT || 3005;
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+    limits: { fileSize: 50 * 1024 * 1024 },
+  })
+);
+
+// cloudinary configuration
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // routes
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/topics", topicRouter);
+app.use("/subtopic", subtopicRouter);
 
+// server setup
 app.get("/", (req, res) => {
   res.send("Hello this is the / route.");
 });

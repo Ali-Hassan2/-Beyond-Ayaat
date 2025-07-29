@@ -13,6 +13,7 @@ const adminmiddle = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_ADMIN_PASSWORD);
     console.log("The decoded is:", decoded);
     req.adminid = decoded.id;
+    next();
   } catch (error) {
     console.log("There is an error while checking middleware", error);
     sendResponse(res, 500, false, [error?.message]);

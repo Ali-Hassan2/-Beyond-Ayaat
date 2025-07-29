@@ -55,10 +55,23 @@ const creatingsubtopic = async (req, res) => {
     const topic = await Topic.findById(topic_id);
     if (!topic) sendResponse(res, 400, false, "Topic not found!");
 
+    const already_existed = await Subtopic.findOne({ title });
+    if (already_existed) {
+      return res.status(400).send({
+        success: false,
+        message: "Subtopic already existed",
+        subtopic: already_existed,
+      });
+    }
+
     const payload = {
       title: title,
       description: description,
       topic_id: topic_id,
+      image: {
+        public_id: (await uploadResult).public_id,
+        url: (await uploadResult).url,
+      },
       summary: summary,
     };
     const newSubTopic = new Subtopic(payload);
@@ -69,7 +82,6 @@ const creatingsubtopic = async (req, res) => {
     sendResponse(res, 500, false, [error?.message]);
   }
 };
-
 const gettingsubtopics = async (req, res) => {};
 
 const deletingsubtopic = async (req, res) => {

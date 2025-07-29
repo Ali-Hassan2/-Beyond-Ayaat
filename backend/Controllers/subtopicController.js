@@ -82,7 +82,34 @@ const creatingsubtopic = async (req, res) => {
     sendResponse(res, 500, false, [error?.message]);
   }
 };
-
 const gettingsubtopics = async (req, res) => {};
 
-module.exports = { gettingsubtopics, creatingsubtopic };
+const deletingsubtopic = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      sendResponse(res, 400, false, "Please provide an id to delete.");
+    }
+
+    const subtopic = await Subtopic.findById(id);
+    if (!subtopic) {
+      return res.status(404).send({
+        success: false,
+        message: "Cannot found Subtopic",
+      });
+    }
+
+    if (subtopic.image?.public_id) {
+      await cloudinary.uploader.destroy(subtopic.image.public_id);
+    }
+
+    await Subtopic.findByIdAndDelete(id);
+    sendResponse(res, 200, true, "Subtopic delete successfully.");
+  } catch (error) {
+    console.log("There is an error while deleting the subtopic");
+    sendResponse(res, 500, false, [error?.message]);
+  }
+};
+
+module.exports = { gettingsubtopics, creatingsubtopic, deletingsubtopic };

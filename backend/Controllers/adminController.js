@@ -70,7 +70,7 @@ const adminLogin = async (req, res) => {
 
     const token = jwt.sign(
       { id: admin._id.toString() },
-      process.env.JWT_PASSWORD,
+      process.env.JWT_ADMIN_PASSWORD,
       {
         expiresIn: "365d",
       }

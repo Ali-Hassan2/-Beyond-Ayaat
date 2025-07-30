@@ -112,4 +112,31 @@ const deletingsubtopic = async (req, res) => {
   }
 };
 
-module.exports = { gettingsubtopics, creatingsubtopic, deletingsubtopic };
+const updatingsubtopic = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Please provide id to update the subtpoic"
+      );
+    }
+
+    const isexist = await Subtopic.findById(id);
+    if (!isexist) {
+      return res.status(404).json({
+        success: false,
+        message: "Subtopic not found.",
+      });
+    }
+  } catch (error) {}
+};
+
+module.exports = {
+  gettingsubtopics,
+  creatingsubtopic,
+  deletingsubtopic,
+  updatingsubtopic,
+};

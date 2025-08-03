@@ -82,7 +82,30 @@ const creatingsubtopic = async (req, res) => {
     sendResponse(res, 500, false, [error?.message]);
   }
 };
-const gettingsubtopics = async (req, res) => {};
+const gettingsubtopics = async (req, res) => {
+  try {
+    const subtopics = await Subtopic.find({});
+    if (subtopics.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Not subtopics found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Subtopics reterived successfully.",
+      subtopics: subtopics,
+    });
+  } catch (error) {
+    console.log(`There is an error: ${error}`);
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+      error: error,
+    });
+  }
+};
 
 const deletingsubtopic = async (req, res) => {
   const { id } = req.params;

@@ -1,0 +1,9 @@
+FROM node:latest
+RUN npm install -g nodemon
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY . .
+ENV NODE_ENV=${NODE_ENV}
+EXPOSE 4001
+CMD ["npm","run","dev"]

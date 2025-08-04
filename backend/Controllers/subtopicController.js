@@ -82,7 +82,84 @@ const creatingsubtopic = async (req, res) => {
     sendResponse(res, 500, false, [error?.message]);
   }
 };
+const gettingsubtopics = async (req, res) => {
+  try {
+    const subtopics = await Subtopic.find({});
+    if (subtopics.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Not subtopics found.",
+      });
+    }
 
-const gettingsubtopics = async (req, res) => {};
+    return res.status(200).json({
+      success: true,
+      message: "Subtopics reterived successfully.",
+      subtopics: subtopics,
+    });
+  } catch (error) {
+    console.log(`There is an error: ${error}`);
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+      error: error,
+    });
+  }
+};
 
-module.exports = { gettingsubtopics, creatingsubtopic };
+const deletingsubtopic = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      sendResponse(res, 400, false, "Please provide an id to delete.");
+    }
+
+    const subtopic = await Subtopic.findById(id);
+    if (!subtopic) {
+      return res.status(404).send({
+        success: false,
+        message: "Cannot found Subtopic",
+      });
+    }
+
+    if (subtopic.image?.public_id) {
+      await cloudinary.uploader.destroy(subtopic.image.public_id);
+    }
+
+    await Subtopic.findByIdAndDelete(id);
+    sendResponse(res, 200, true, "Subtopic delete successfully.");
+  } catch (error) {
+    console.log("There is an error while deleting the subtopic");
+    sendResponse(res, 500, false, [error?.message]);
+  }
+};
+
+const updatingsubtopic = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Please provide id to update the subtpoic"
+      );
+    }
+
+    const isexist = await Subtopic.findById(id);
+    if (!isexist) {
+      return res.status(404).json({
+        success: false,
+        message: "Subtopic not found.",
+      });
+    }
+  } catch (error) {}
+};
+
+module.exports = {
+  gettingsubtopics,
+  creatingsubtopic,
+  deletingsubtopic,
+  updatingsubtopic,
+};

@@ -1,8 +1,17 @@
 version: "3.8"
 
 services:
+  mongo:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
   backend:
     build: ./backend
+    restart: unless-stopped
     ports:
       - "3004:3004"
     env_file:
@@ -12,19 +21,11 @@ services:
 
   frontend:
     build: ./frontend
+    restart: unless-stopped
     ports:
-      - "5173:5173"
-    env_file:
-      - ./frontend/.env
+      - "5173:80"
     depends_on:
       - backend
-
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
 
 volumes:
   mongo_data:

@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useContext } from "react";
+import { NameContext } from "../../Pages/Home";
 import { GiGalaxy } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+
+const name= useContext(NameContext);
+const [name1, setName1] = useState('');
+const token = localStorage.getItem("token");
+
+const handlelogout = () => {
+  localStorage.clear(); 
+}
+
+useEffect(() => {
+if (name) {
+  setName1(name);
+}
+else {
+  setName1("Guest,Login to continue");
+}
+}, [name]);
+
   return (
     <nav className="w-full h-auto md:h-[100px] flex flex-col md:flex-row justify-center items-center bg-transparent text-white overflow-hidden ">
       <div className="left w-full md:flex-1 flex justify-center md:justify-start items-center h-[80px] gap-4 md:pl-[100px]">
@@ -25,16 +45,43 @@ function Navbar() {
         <h4>
           <Link to="/articles">Articles</Link>
         </h4>
+
+        
+          {token ? (
+            
+            
         <div className="flex  gap-5">
           <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg bg-transparent">
-            <Link to="/signin">Signin</Link>
+            <Link  to="/signin"> Hi, {name1} </Link>
           </button>
-          <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg  bg-[#48AFB6] ">
+          <button className="border border-white/30 px-3 py-1 md:p-2 rounded-l bg-transparent">
+            <Link to="/signup" onClick={handlelogout}>Logout</Link>
+            </button>
+            </div>
+            
+          ) : (
+
+             
+            <div className="flex  gap-5">
+            <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg bg-transparent">
+            <Link  to="/signin"> Login </Link>
+          </button>
+          <button className="border border-white/30 px-3 py-1 md:p-2 rounded-lg bg-transparent">
             <Link to="/signup">Signup</Link>
-          </button>
+            </button>
+            </div>
+
+          )}
+        
         </div>
-      </div>
-    </nav>
+      </nav>
+
+
+
+
+
+
+        
   );
 }
 

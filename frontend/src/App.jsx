@@ -4,6 +4,9 @@ import {Signin} from './Pages/Signin';
 import {Signup} from './Pages/Signup';
 import './App.css';
 
+
+
+
 const router = createBrowserRouter([
   { path: '/',
    element: <Home /> },
@@ -19,6 +22,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+
+
   return (
     <div>
       <RouterProvider router={router} />

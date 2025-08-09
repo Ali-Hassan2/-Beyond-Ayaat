@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { NameContext } from "../../Pages/Home";
+import { UserContext } from "../../Context/UserContext.jsx";
 import { GiGalaxy } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 function Navbar() {
 
-const name= useContext(NameContext);
+const name= useContext(UserContext);
 const [name1, setName1] = useState('');
 const token = localStorage.getItem("token");
 

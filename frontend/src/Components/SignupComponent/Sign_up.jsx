@@ -12,6 +12,7 @@ function Sign_up() {
     confirmPassword: ''
   });
 
+
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -43,6 +44,8 @@ function Sign_up() {
           email: '',
           password: '',
           confirmPassword: ''
+
+
         });
       } else {
         setMessage(response.data.message || "Signup failed");

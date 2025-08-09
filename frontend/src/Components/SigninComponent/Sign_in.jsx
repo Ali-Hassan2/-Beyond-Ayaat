@@ -7,6 +7,7 @@ import { googleAuth } from "../../api/google_api";
 function Sign_in() {
   const navigate = useNavigate();
   const [token, settoken] = useState("");
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,9 +27,15 @@ function Sign_in() {
         "http://localhost:3004/user/login",
         formData
       );
+    
+
 
       if (response.data.success) {
+        console.log("user datat",response.data)
+        
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        
         navigate("/");
       } else {
         setError(response.data.message || "Login failed");

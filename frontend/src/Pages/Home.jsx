@@ -3,8 +3,6 @@ import { Navbar, Home2, Home3, Landing } from "../Components/HomeComponents";
 
 function Home() {
  
-
-
   return (
     <div>
      <Landing />

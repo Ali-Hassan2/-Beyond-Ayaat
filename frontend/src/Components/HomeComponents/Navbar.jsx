@@ -21,7 +21,7 @@ if (name) {
 else {
   setName1("Guest,Login to continue");
 }
-}, [name]);
+});
 
   return (
     <nav className="w-full h-auto md:h-[100px] flex flex-col md:flex-row justify-center items-center bg-transparent text-white overflow-hidden ">

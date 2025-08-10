@@ -1,0 +1,1 @@
+export { AdminSign_up } from './AdminSign_up.jsx';

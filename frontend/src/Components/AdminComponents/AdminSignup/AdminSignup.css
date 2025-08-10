@@ -1,0 +1,96 @@
+
+:root{
+  --bg1: #0f172a; /* deep navy */
+  --accent1: #8b5cf6; /* violet */
+  --accent2: #06b6d4; /* teal */
+  --gold: #fbbf24;
+  --card: rgba(255,255,255,0.04);
+}
+
+/* Global page layout */
+.admin-signup-wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(135deg, var(--bg1) 0%, #071044 50%, #031024 100%);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  padding:3rem;
+  overflow:hidden;
+}
+
+/* Animated background orbs */
+.bg-orbs{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+.orb{ position:absolute; border-radius:50%; filter:blur(36px); opacity:0.6; mix-blend-mode:screen; }
+.orb-1{ width:420px; height:420px; background:linear-gradient(45deg,var(--accent1), var(--accent2)); left:-10%; top:-10%; animation: float 12s ease-in-out infinite; }
+.orb-2{ width:300px; height:300px; background:linear-gradient(45deg,var(--gold), #f97316); right:-5%; bottom:-5%; animation: float 10s ease-in-out infinite reverse; }
+.orb-3{ width:220px; height:220px; background:linear-gradient(45deg,#06b6d4, #3b82f6); left:10%; bottom:20%; animation: float 14s ease-in-out infinite; }
+@keyframes float{ 0%{ transform: translateY(0) } 50%{ transform: translateY(-30px) } 100%{ transform: translateY(0) } }
+
+/* Card */
+.admin-card{
+  width:980px;
+  max-width:980px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius:18px;
+  padding:2.4rem;
+  position:relative;
+  z-index:2;
+  box-shadow: 0 8px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px) saturate(120%);
+  animation: pop .6s cubic-bezier(.2,.9,.2,1);
+}
+@keyframes pop{ from{ transform: translateY(12px) scale(.98); opacity:0 } to{ transform:none; opacity:1 } }
+
+.brand{ display:flex; align-items:flex-start; gap:1rem; margin-bottom:1rem; }
+.brand h1{ font-size:2rem; margin:0; color: #fff; letter-spacing: -0.02em; }
+.brand h1 span{ color:var(--accent2); }
+.brand .tag{ color:rgba(255,255,255,0.7); margin-top:6px; }
+
+.inputs-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:1rem 1.2rem; margin-top:1rem }
+.float-label{ position:relative; display:block; }
+.float-label.full{ grid-column: 1 / -1; }
+.float-label input{ width:100%; padding:1.05rem 1rem; border-radius:12px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color:#fff; outline:none; transition: box-shadow .18s ease, transform .12s ease; font-size:0.95rem }
+.float-label span{ position:absolute; left:14px; top:12px; pointer-events:none; transition: transform .18s ease, font-size .18s ease, top .18s ease; color: rgba(255,255,255,0.6); font-size:0.9rem }
+.float-label input:focus{ box-shadow: 0 6px 20px rgba(99,102,241,0.08); transform: translateY(-2px) }
+.float-label input:focus + span,
+.float-label input:not(:placeholder-shown) + span{ transform: translateY(-44px) scale(.98); font-size:0.8rem; color: var(--accent1) }
+
+/* Make placeholder hidden so :placeholder-shown works */
+.float-label input::placeholder{ color: transparent }
+
+/* Actions */
+.actions{ margin-top:1.2rem; display:flex; justify-content:flex-end; }
+.btn{ position:relative; overflow:hidden; background: linear-gradient(90deg,var(--accent1),var(--accent2)); color:#041024; border:none; padding:0.85rem 1.3rem; border-radius:10px; font-weight:600; cursor:pointer; box-shadow: 0 6px 20px rgba(99,102,241,0.12); transition: transform .12s ease, box-shadow .12s ease }
+.btn:disabled{ opacity:0.6; cursor:not-allowed }
+.btn:hover{ transform: translateY(-4px); box-shadow: 0 10px 30px rgba(99,102,241,0.18) }
+.btn-ink{ position:absolute; inset:0; pointer-events:none; opacity:0.12 }
+
+/* Status messages */
+.status{ margin-top:1rem }
+.error{ color:#ff7b7b; font-weight:600 }
+.success{ color:#9be7c4; font-weight:600 }
+
+.note{ margin-top:1.2rem; color:rgba(255,255,255,0.6); font-size:0.85rem }
+
+/* Responsive */
+@media (max-width:880px){
+  .admin-card{ width:100%; padding:1.6rem }
+  .inputs-grid{ grid-template-columns: 1fr; }
+  .brand h1{ font-size:1.4rem }
+}
+
+/* subtle glow for inputs via :focus-within on the card */
+.admin-card:focus-within{ box-shadow: 0 12px 60px rgba(2,6,23,0.7) }
+
+/* small decorative underline animation on brand */
+.brand h1::after{ content:''; display:block; height:3px; width:40px; margin-top:8px; border-radius:2px; background:linear-gradient(90deg,var(--accent1),var(--gold)); transform: scaleX(0); transform-origin:left; transition: transform .6s cubic-bezier(.2,.9,.2,1) }
+.brand:hover h1::after{ transform: scaleX(1) }
+
+/* accessible focus outlines */
+.float-label input:focus{ outline: 3px solid rgba(139,92,246,0.12); outline-offset:3px }
+
+/* small flourish for the note text appearing when success */
+.status .success{ animation: rise .6s ease both }
+@keyframes rise{ from{ transform: translateY(8px); opacity:0 } to{ transform:none; opacity:1 } }

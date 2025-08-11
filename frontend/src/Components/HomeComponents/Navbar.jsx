@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { NameContext } from "../../Pages/Home";
+import { UserContext } from "../../Context/UserContext.jsx";
 import { GiGalaxy } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const name = useContext(NameContext);
+  const name = useContext(UserContext);
   const [name1, setName1] = useState("");
   const token = localStorage.getItem("token");
 
@@ -19,7 +19,7 @@ function Navbar() {
     } else {
       setName1("Guest,Login to continue");
     }
-  }, [name]);
+  });
 
   return (
     <nav className="w-full h-auto md:h-[100px] flex flex-col md:flex-row justify-center items-center  text-white overflow-hidden x` bg-[#0A1121]">

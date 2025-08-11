@@ -1,6 +1,5 @@
 import React from "react";
-import { Sign_in } from "../Components/SigninComponent";
-
+import { Sign_in } from "../Components";
 function Signin() {
   return (
     <div>

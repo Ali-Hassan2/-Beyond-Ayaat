@@ -1,12 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import {
-//   Home,
-//   Signup,
-//   Signin,
-//   AdminDashboard,
-//   AdminSignin,
-//   AdminSignup,
-// } from "./Pages";
 import {
   Home,
   Signin,

@@ -1,1 +1,1 @@
-export { AdminSign_up } from './AdminSign_up.jsx';
+export { AdminSign_up } from "./AdminSign_up.jsx";

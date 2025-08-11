@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import './AdminSign_up.css';
+import { Link } from "react-router-dom";
 
-
-import "./AdminSignup.css";
-
- function AdminSign_up() {
-  const [form, setForm] = useState({
+function AdminSign_up() {
+  const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
@@ -13,146 +12,106 @@ import "./AdminSignup.css";
     confirmPassword: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+
+  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-    setError('');
-    setSuccess('');
-  };
-
-  const validate = () => {
-    if (!form.first_name.trim() || !form.last_name.trim()) return "Please enter first and last name.";
-    if (!form.email.includes('@')) return "Please enter a valid email.";
-    if (form.password.length < 8) return "Password must be at least 8 characters.";
-    if (form.password !== form.confirmPassword) return "Passwords do not match.";
-    return null;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const v = validate();
-    if (v) { setError(v); return; }
 
-    setLoading(true);
-    setError('');
+    if (formData.password !== formData.confirmPassword) {
+      setMessage(" Passwords do not match");
+      return;
+    }
+
     try {
-      const resp = await fetch('http://localhost:4001/admin/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: form.first_name,
-          last_name: form.last_name,
-          email: form.email,
-          password: form.password
-        })
+      const response = await axios.post('http://localhost:3004/user/signup', {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        password: formData.password
       });
 
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.message || 'Signup failed');
+      if (response.data.success) {
+        setMessage("Signup successful!");
+        setFormData({
+          first_name: '',
+          last_name: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
 
-      setSuccess(data.message || 'Admin account created successfully');
-      setForm({ first_name: '', last_name: '', email: '', password: '', confirmPassword: '' });
-    } catch (err) {
-      setError(err.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
+
+        });
+      } else {
+        setMessage(response.data.message || "Signup failed");
+      }
+    } catch (error) {
+      setMessage( (error.response?.data?.message || "Server error"));
     }
   };
 
   return (
-    <div className="admin-signup-wrap">
-      <div className="bg-orbs" aria-hidden="true">
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
+    <div className="signup-container">
+      <div className="signup-card">
+        <h2 className="signup-title">Sign Up</h2>
+        <form className="signup-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="first_name"
+            placeholder="First Name"
+            value={formData.first_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="last_name"
+            placeholder="Last Name"
+            value={formData.last_name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="signup-button">Register</button>
+        </form>
+        {message && <p className="signup-message">{message}</p>}
+        <p className="login-link">
+          Already have an account? <Link to="/signin">Login here</Link>
+        </p>
       </div>
-
-      <form className="admin-card" onSubmit={handleSubmit} noValidate>
-        <div className="brand">
-          <h1>Beyon <span>Ayaat</span></h1>
-          <p className="tag">Admin Registration</p>
-        </div>
-
-        <div className="inputs-grid">
-          <label className="float-label">
-            <input
-              type="text"
-              name="first_name"
-              value={form.first_name}
-              onChange={handleChange}
-              required
-            />
-            <span>First Name</span>
-          </label>
-
-          <label className="float-label">
-            <input
-              type="text"
-              name="last_name"
-              value={form.last_name}
-              onChange={handleChange}
-              required
-            />
-            <span>Last Name</span>
-          </label>
-
-          <label className="float-label full">
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-            <span>Email Address</span>
-          </label>
-
-          <label className="float-label">
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-            <span>Password</span>
-          </label>
-
-          <label className="float-label">
-            <input
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-            <span>Confirm Password</span>
-          </label>
-        </div>
-
-        <div className="actions">
-          <button type="submit" className="btn" disabled={loading}>
-            <span className="btn-ink" />
-            {loading ? 'Creating...' : 'Create Admin'}
-          </button>
-        </div>
-
-        <div className="status">
-          {error && <p className="error">{error}</p>}
-          {success && <p className="success">{success}</p>}
-        </div>
-
-        <div className="note">
-          <small>Admins can manage posts, approve content and moderate the community. Keep credentials secure.</small>
-        </div>
-
-      </form>
     </div>
   );
 }
+
+
+
 
 export { AdminSign_up };

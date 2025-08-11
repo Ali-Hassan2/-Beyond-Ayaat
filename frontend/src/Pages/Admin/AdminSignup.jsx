@@ -1,5 +1,5 @@
 import React from 'react';
-// import { AdminSign_up } from '../Components/AdminComponents/AdminSignup';
+import { AdminSign_up } from "../Components/AdminComponents/AdminSignup";
 
 const AdminSignup = () => {
   return (

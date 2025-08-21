@@ -135,6 +135,7 @@ const userLogin = async (req, res) => {
     });
   }
 };
+const greet = async (req, res) => {};
 
 const logout = async (req, res) => {
   try {

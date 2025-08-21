@@ -136,25 +136,87 @@ const deletingsubtopic = async (req, res) => {
 };
 
 const updatingsubtopic = async (req, res) => {
-  const { id } = req.params;
+  const updations = subtopicvalidation.safeParse(req.body);
+  if (!updations.success) {
+    return sendResponse(
+      res,
+      402,
+      "Please validate the input",
+      null,
+      updations.error.issues.map((err) => err?.message)
+    );
+  }
+
   try {
-    if (!id) {
-      return sendResponse(
-        res,
-        400,
-        false,
-        "Please provide id to update the subtpoic"
-      );
+    const title = req.body?.title;
+    const description = req.body?.description;
+    const topic_id = req.body?.topic_id;
+    const image = req.files?.image;
+    const summary = req.body?.summary;
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return sendResponse(res, false, "Image not found");
     }
+    const allowed_formats = ["image/png", "image/jpeg"];
+    if (!allowed_formats.includes(image.mimetype)) {
+      return res.status(400).send({
+        success: false,
+        message: "Format not allowed",
+      });
+    }
+
+    const uploadResult = cloudinary.uploader.upload(image.tempFilePath);
+
+    if (!uploadResult || uploadResult.error) {
+      return res.status(400).json({
+        success: false,
+        message: "Sorry cannot upload image.",
+      });
+    }
+
+    if (!title || !description || !topic_id || !summary) {
+      return res.status(400).send({
+        success: false,
+        message: "Please provide a complete body.",
+      });
+    }
+    const { id } = req.params;
+    console.log("The id is:", id);
 
     const isexist = await Subtopic.findById(id);
     if (!isexist) {
-      return res.status(404).json({
-        success: false,
-        message: "Subtopic not found.",
-      });
+      sendResponse(res, 404, false, "No such subtopic");
     }
-  } catch (error) {}
+    const updated_one = await Subtopic.updateOne(
+      {
+        _id: id,
+      },
+      {
+        title,
+        description,
+        topic_id,
+        image,
+        summary,
+      }
+    );
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Subtopic updated successfully",
+      updated_one
+    );
+  } catch (error) {
+    console.error("Error updating subtopic:", error);
+    return sendResponse(
+      res,
+      501,
+      false,
+      "Internal Server Error",
+      null,
+      error.message
+    );
+  }
 };
 
 module.exports = {

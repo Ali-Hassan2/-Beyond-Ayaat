@@ -22,7 +22,6 @@ const adminSignup = async (req, res) => {
       validation.error.issues.map((err) => err?.message)
     );
   }
-
   try {
     if (!first_name || !last_name || !email || !password) {
       return sendResponse(res, 400, false, "Incomplete input");
@@ -100,4 +99,27 @@ const adminLogin = async (req, res) => {
   }
 };
 
-module.exports = { adminSignup, adminLogin };
+const logout = async (req, res) => {
+  try {
+    if (!req.cookie.jwt) {
+      return res.status(400).json({
+        success: false,
+        message: "Please login first.",
+      });
+    }
+    res.clearCookie("jwt");
+    return res.status(200).send({
+      success: false,
+      message: "Logout successfully",
+    });
+  } catch (error) {
+    console.log("There is an issue: ", error);
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server error",
+      error: error,
+    });
+  }
+};
+
+module.exports = { adminSignup, adminLogin, logout };

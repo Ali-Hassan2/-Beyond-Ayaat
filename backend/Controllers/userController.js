@@ -136,6 +136,29 @@ const userLogin = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    if (!req.cookie.jwt) {
+      return res.status(400).json({
+        success: false,
+        message: "Please login first.",
+      });
+    }
+    res.clearCookie("jwt");
+    return res.status(200).send({
+      success: false,
+      message: "Logout successfully.",
+    });
+  } catch (error) {
+    console.log("There is an error:", error);
+    return res.status(505).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error?.message,
+    });
+  }
+};
+
 const googlelogin = async (req, res) => {
   try {
     const code = req.body?.code;
@@ -183,4 +206,4 @@ const googlelogin = async (req, res) => {
   }
 };
 
-module.exports = { userLogin, userSignup, googlelogin };
+module.exports = { userLogin, userSignup, googlelogin, logout };

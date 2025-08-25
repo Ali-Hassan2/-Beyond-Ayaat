@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const colors = require("colors");
 const Topics = require("../Models/topic-model");
-const topicvalidation = require("../Validations/topics.validations");
+const topicvalidation = require("../Validations/topics.validation.js");
 dotenv.config();
 
 const connection_db = async () => {
@@ -74,6 +74,7 @@ async function seeding_Data() {
         return;
       }
     }
+    await Topics.deleteMany({});
     await Topics.insertMany(topics);
     console.log("Topics added.");
   } catch (error) {

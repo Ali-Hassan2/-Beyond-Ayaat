@@ -5,38 +5,38 @@ import { IoMdTimer } from "react-icons/io";
 import { FaEarthAfrica } from "react-icons/fa6";
 import { TbGalaxy } from "react-icons/tb";
 import { GiHumanPyramid } from "react-icons/gi";
-import { useTopics } from "../../Hooks/usetopics";
+import { useTopics } from "../../Hooks/useTopics";
 
 
 
-const box_Data = [
-  {
-    image: <IoMdTimer size={60} className="" />,
-    label: "Space & Time",
-    desc: "Explore the mysteries of time, relativity, and the vast cosmos.",
-  },
-  {
-    image: <FaEarthAfrica size={60} className="" />,
-    label: "Earth & Science",
-    desc: "Dive into geoscience, climate, and Earth’s natural wonders.",
-  },
-  {
-    image: <TbGalaxy size={60} className="" />,
-    label: "Dark Energy Portals",
-    desc: "Unveil the hidden forces shaping our universe’s fate.",
-  },
-  {
-    image: <GiHumanPyramid size={60} className="" />,
-    label: "Human Biology",
-    desc: "Understand the design and function of the human body.",
-  },
-];
+// const box_Data = [
+//   {
+//     image: <IoMdTimer size={60} className="" />,
+//     label: "Space & Time",
+//     desc: "Explore the mysteries of time, relativity, and the vast cosmos.",
+//   },
+//   {
+//     image: <FaEarthAfrica size={60} className="" />,
+//     label: "Earth & Science",
+//     desc: "Dive into geoscience, climate, and Earth’s natural wonders.",
+//   },
+//   {
+//     image: <TbGalaxy size={60} className="" />,
+//     label: "Dark Energy Portals",
+//     desc: "Unveil the hidden forces shaping our universe’s fate.",
+//   },
+//   {
+//     image: <GiHumanPyramid size={60} className="" />,
+//     label: "Human Biology",
+//     desc: "Understand the design and function of the human body.",
+//   },
+// ];
 
 
 function Landing({ props }) {
 
   const { topics, loading, error } = useTopics();
-  console.log(topics);
+ 
   
 
 

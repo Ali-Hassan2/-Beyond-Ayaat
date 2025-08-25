@@ -48,7 +48,7 @@
 .brand h1 span{ color:var(--accent2); }
 .brand .tag{ color:rgba(255,255,255,0.7); margin-top:6px; }
 
-.inputs-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:5rem 1.2rem; margin-top:1rem }
+.inputs-grid{ display:grid; grid-template-columns: repeat(2fr, 1fr); gap:5rem 1.2rem; margin-top:1rem }
 .float-label{ position:relative; display:block; }
 .float-label.full{ grid-column: 1 / -1; }
 .float-label input{ width:100%; padding:1.05rem 1rem; border-radius:12px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color:#fff; outline:none; transition: box-shadow .18s ease, transform .12s ease; font-size:0.95rem }

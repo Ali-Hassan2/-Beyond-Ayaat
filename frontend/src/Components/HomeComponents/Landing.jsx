@@ -5,6 +5,9 @@ import { IoMdTimer } from "react-icons/io";
 import { FaEarthAfrica } from "react-icons/fa6";
 import { TbGalaxy } from "react-icons/tb";
 import { GiHumanPyramid } from "react-icons/gi";
+import { useTopics } from "../../Hooks/usetopics";
+
+
 
 const box_Data = [
   {
@@ -28,7 +31,15 @@ const box_Data = [
     desc: "Understand the design and function of the human body.",
   },
 ];
+
+
 function Landing({ props }) {
+
+  const { topics, loading, error } = useTopics();
+  console.log(topics);
+  
+
+
   return (
     <div
       className="w-full min-h-screen overflow-x-hidden "
@@ -66,8 +77,8 @@ function Landing({ props }) {
         </button>
       </div>
       <div className="boxes flex flex-wrap mt-10 justify-center gap-[50px] overflow-hidden">
-        {box_Data.map((box, index) => (
-          <LandingBoxes box={box} key={index} />
+        {topics?.map(topics => (
+          <LandingBoxes box={topics} key={topics.id} />
         ))}
       </div>
     </div>

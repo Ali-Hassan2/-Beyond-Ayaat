@@ -86,4 +86,4 @@ async function execute_both() {
   await seeding_Data();
 }
 
-execute_both(); theek hai aab
+execute_both();

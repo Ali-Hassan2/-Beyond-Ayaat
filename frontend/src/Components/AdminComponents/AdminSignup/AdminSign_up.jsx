@@ -85,7 +85,7 @@ function AdminSign_up() {
       <form className="admin-card" onSubmit={handleSubmit} noValidate>
         <div className="brand">
           <h1>
-            Beyon <span>Ayaat</span>
+            Beyond <span>Ayaat</span>
           </h1>
           <p className="tag">Admin Registration</p>
         </div>

@@ -1,5 +1,5 @@
 const express = require("express");
-const adminmiddle = require("../Middlewares/adminmiddleware");
+const { adminmiddle } = require("../Middlewares/adminmiddleware");
 const {
   creatingsubtopic,
   gettingsubtopics,

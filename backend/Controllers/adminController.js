@@ -121,5 +121,30 @@ const logout = async (req, res) => {
     });
   }
 };
+const getadmins = async (req, res) => {
+  const adminid = req.adminid;
+  if (!adminid) {
+    return res.status(404).send({
+      success: false,
+      message: "Only admins can create new admins",
+    });
+  }
 
-module.exports = { adminSignup, adminLogin, logout };
+  try {
+    const admins = await Admin.find(
+      {},
+      { first_name: 1, last_name: 1, email: 1, password: 1 }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Admins retrieved successfully",
+      data: admins,
+    });
+  } catch (error) {
+    console.log("There is an error,", error);
+    return sendResponse(res, 500, false, "There is an error.", error?.message);
+  }
+};
+
+module.exports = { adminSignup, adminLogin, logout, getadmins };

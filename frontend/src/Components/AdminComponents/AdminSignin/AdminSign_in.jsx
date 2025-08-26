@@ -42,10 +42,21 @@ import './AdminSignin.css';
       });
 
       const data = await resp.json();
+      
       if (!resp.ok) throw new Error(data.message || 'Login failed');
 
-      setSuccess(data.message || 'Admin logged in successfully');
-      setForm({ email: '', password: '' });
+      // Assuming the backend returns { success, token, user, message }
+      if (data.success) {
+        console.log("user data", data);
+
+        localStorage.setItem("admintoken", data.token);
+        localStorage.setItem("admin", JSON.stringify(data.admin));
+
+        setSuccess(data.message || 'Admin logged in successfully');
+        setForm({ email: '', password: '' });
+      } else {
+        setError(data.message || 'Login failed');
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {

@@ -1,23 +1,40 @@
-import { children, createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
-export const UserContext =createContext();
+export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const [name, setName] = useState('');
+  const [adname, setAdName] = useState('');
 
-const [name,setName]=useState('');
-useEffect(()=>{
-const token=localStorage.getItem("token");
-const user= JSON.parse(localStorage.getItem("user"))
-  if(token){
-    setName(user.first_name);
-  }
+  // safeParse function
+  const safeParse = (key) => {
+    try {
+      const value = localStorage.getItem(key);
+      return value && value !== "undefined" ? JSON.parse(value) : null;
+    } catch {
+      return null;
+    }
+  };
 
-}),[];
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = safeParse("user");
 
-return (
+    const admintoken = localStorage.getItem("admintoken");
+    const admin = safeParse("admin");
 
-<UserContext.Provider value={name} >
-  {children}
-</UserContext.Provider>
-);
+    if (token && user) {
+      setName(user.first_name);
+    }
+
+    if (admintoken && admin) {
+      setAdName(admin.first_name);
+    }
+  }, []);
+
+  return (
+    <UserContext.Provider value={{ name, adname }}>
+      {children}
+    </UserContext.Provider>
+  );
 };

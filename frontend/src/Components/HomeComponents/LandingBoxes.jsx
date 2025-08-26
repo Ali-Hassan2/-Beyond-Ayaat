@@ -6,7 +6,10 @@ function LandingBoxes({ box }) {
     <div className="flip-box w-full sm:w-[45%] md:w-[18%] h-[260px] m-2">
       <div className="flip-box-inner shadow-2xl rounded-2xl">
         <div className="flip-box-front bg-white/10 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center p-4 text-white">
-          {box.icon}
+          <div
+          dangerouslySetInnerHTML={{ __html: box.icon }}
+          className ="w-10 h-10"
+          />
           <h1 className="text-lg font-semibold mt-4 text-center">
             {box.title}
           </h1>

@@ -6,4 +6,4 @@ export { Sign_in } from "./SigninComponent/Sign_in";
 export { Sign_up } from "./SignupComponent/Sign_up";
 export { AdminSign_up } from "./AdminComponents/AdminSignup/AdminSign_up";
 export { AdminSign_in } from "./AdminComponents/AdminSignin/AdminSign_in";
-export { AdminDashboard } from "./AdminComponents/AdminDash/AdminDashboard";
+export { Admin_Dashboard } from "./AdminComponents/AdminDash/Admin_Dashboard";

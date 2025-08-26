@@ -5,7 +5,7 @@ import { GiGalaxy } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const name = useContext(UserContext);
+  const { name } = useContext(UserContext);
   const [name1, setName1] = useState("");
   const token = localStorage.getItem("token");
 

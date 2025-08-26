@@ -183,72 +183,7 @@ const deleteadmin = async (req, res) => {
   }
 };
 
-const updateadmin = async (req, res) => {
-  const adminid = req.adminid;
-  if (!adminid) {
-    return res.status(404).json({
-      success: false,
-      message: "Only admin have access to change admin info.",
-    });
-  }
-  try {
-    const { id } = req.params;
-    const { first_name, last_name, email, password } = req.body;
-    if (!id || !first_name || !last_name || !password) {
-      return res.status(304).send({
-        success: false,
-        message: "Please complete the input",
-      });
-    }
-    const finded = await Admin.findById(id);
-    if (!finded) {
-      return sendResponse(res, 404, false, "No admin with this id.");
-    }
 
-    const isSame =
-      finded?.first_name === first_name &&
-      finded?.last_name === last_name &&
-      finded?.email === email &&
-      (!password || (await bcrypt.compare(password, finded.password)));
-    if (isSame) {
-      return res.status(404).json({
-        success: false,
-        message: "Please do some change to update admin info",
-      });
-    }
-    let hashedPassword = finded.password;
-    if (password && !(await bcrypt.compare(password, finded.password))) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-
-    const payload = {
-      first_name,
-      last_name,
-      email,
-      password: hashedPassword,
-    };
-    if (email) {
-      payload.email = email;
-    }
-    const updated_one = await Admin.findByIdAndUpdate(id, payload, {
-      new: true,
-    });
-    return sendResponse(
-      res,
-      200,
-      true,
-      "Admin updated successfully",
-      updated_one
-    );
-  } catch (error) {
-    console.log("There is an error.", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error?.message,
-    });
-  }
-};
 
 module.exports = {
   adminSignup,
@@ -256,5 +191,4 @@ module.exports = {
   logout,
   getadmins,
   deleteadmin,
-  updateadmin,
 };

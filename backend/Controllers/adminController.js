@@ -1,7 +1,7 @@
 const Admin = require("../Models/admin-model");
 const dotenv = require("dotenv");
 const adminvalidationSchema = require("../Validations/admin.validation");
-const sendResponse = require("../Utils/send-response"); // 👈 Fixed import
+const sendResponse = require("../Utils/send-response");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { fa } = require("zod/v4/locales");

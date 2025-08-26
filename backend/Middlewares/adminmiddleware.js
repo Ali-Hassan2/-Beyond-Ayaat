@@ -11,13 +11,14 @@ const adminmiddle = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_ADMIN_PASSWORD);
-    console.log("The decoded is:", decoded);
     req.adminid = decoded.id;
     next();
   } catch (error) {
-    console.log("There is an error while checking middleware", error);
-    sendResponse(res, 500, false, [error?.message]);
+    console.log("Error in admin middleware:", error);
+    return sendResponse(res, 401, false, "Invalid or expired token", null, [
+      error.message,
+    ]);
   }
 };
 
-module.exports = adminmiddle;
+module.exports = { adminmiddle };

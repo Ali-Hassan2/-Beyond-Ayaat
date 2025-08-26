@@ -4,6 +4,7 @@ const adminvalidationSchema = require("../Validations/admin.validation");
 const sendResponse = require("../Utils/send-response"); // 👈 Fixed import
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { fa } = require("zod/v4/locales");
 dotenv.config();
 
 const adminSignup = async (req, res) => {
@@ -147,4 +148,39 @@ const getadmins = async (req, res) => {
   }
 };
 
-module.exports = { adminSignup, adminLogin, logout, getadmins };
+const deleteadmin = async (req, res) => {
+  const adminid = req.adminid;
+  if (!adminid) {
+    return sendResponse(
+      res,
+      404,
+      false,
+      "Only admin can delete another admin."
+    );
+  }
+  const { id } = req.params;
+  if (!id) {
+    return res.status(404).json({
+      success: false,
+      message: "There is no id provided",
+    });
+  }
+  console.log("The id is:", id);
+  try {
+    const deleted = await Admin.findByIdAndDelete(id);
+    if (!deleted) {
+      return sendResponse(res, false, 404, "No admin with this id founded.");
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Admin delete successfully.",
+    });
+  } catch (error) {
+    console.log("There is an error.", error);
+    return sendResponse(res, false, 505, "Internal Server Error", null, [
+      error?.message,
+    ]);
+  }
+};
+
+module.exports = { adminSignup, adminLogin, logout, getadmins, deleteadmin };

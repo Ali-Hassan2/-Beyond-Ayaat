@@ -22,6 +22,7 @@ function Navbar() {
   });
 
   return (
+    
     <nav className="w-full h-auto md:h-[100px] flex flex-col md:flex-row justify-center items-center  text-white overflow-hidden x` bg-[#0A1121]">
       <div className="left w-full md:flex-1 flex justify-center md:justify-start items-center h-[80px] gap-4 md:pl-[100px]">
         <GiGalaxy

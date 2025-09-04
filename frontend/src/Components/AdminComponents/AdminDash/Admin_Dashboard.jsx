@@ -19,7 +19,8 @@ function Admin_Dashboard() {
     if (adname) {
       setName2(adname);
     } else {
-      setName2("Guest,Login to continue");
+     setName2("Admin,Login to continue");
+
     }
   });
 
@@ -28,9 +29,8 @@ function Admin_Dashboard() {
 
 
   return (
-
-    
     <div >
+
       <Admin_Nav />
 <div className="mt-8 px-6">
   <div className="flex items-start">
@@ -39,15 +39,10 @@ function Admin_Dashboard() {
                     items-center justify-center shadow-xl 
                     text-center px-4">
       <h1 className="text-lg font-bold">Hi,</h1>
-      <p className="text-md font-semibold">{name2 ? name2 : "Guest, Login to continue"}</p>
+      <p className="text-md font-semibold">{name2} </p>
     </div>
   </div>
 </div>
-
-
-
-
-
 
     </div>
   )

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import './AdminSignin.css';
+import { useNavigate } from "react-router-dom";
 
  function AdminSign_in() {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ import './AdminSignin.css';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +22,7 @@ import './AdminSignin.css';
 
   const validate = () => {
     if (!form.email.includes('@')) return "Please enter a valid email.";
-    if (form.password.length < 8) return "Password must be at least 8 characters.";
+    // if (form.password.length < 8) return "Password must be at least 8 characters.";
     return null;
   };
 
@@ -47,12 +49,16 @@ import './AdminSignin.css';
 
       // Assuming the backend returns { success, token, user, message }
       if (data.success) {
+        
         console.log("user data", data);
-
         localStorage.setItem("admintoken", data.token);
         localStorage.setItem("admin", JSON.stringify(data.admin));
+        
 
         setSuccess(data.message || 'Admin logged in successfully');
+        setTimeout(() => {
+      navigate("/Admin/dashboard");
+    }, 1000); 
         setForm({ email: '', password: '' });
       } else {
         setError(data.message || 'Login failed');

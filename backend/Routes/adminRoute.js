@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express")
 const {
   adminLogin,
   adminSignup,
@@ -6,14 +6,14 @@ const {
   getadmins,
   deleteadmin,
   updateadmin,
-} = require("../Controllers/adminController");
-const { adminmiddle } = require("../Middlewares/adminmiddleware");
-const router = express.Router();
+} = require("../Controllers/adminController")
+const { adminmiddle } = require("../Middlewares/adminmiddleware")
+const router = express.Router()
 
-router.post("/login", adminLogin);
-router.post("/signup", adminmiddle, adminSignup);
-router.post("/logout", adminmiddle, logout);
-router.get("/getadmins", adminmiddle, getadmins);
-router.delete("/deleteadmin/:id", adminmiddle, deleteadmin);
-router.put("/updateadmin", adminmiddle, updateadmin);
-module.exports = router;
+router.post("/login", adminLogin)
+router.post("/signup", adminmiddle, adminSignup)
+router.post("/logout", adminmiddle, logout)
+router.get("/amgm/getadmins", adminmiddle, getadmins)
+router.delete("/amgm/deleteadmin/:id", adminmiddle, deleteadmin)
+router.put("/amgm/updateadmin/:id", adminmiddle, updateadmin)
+module.exports = router

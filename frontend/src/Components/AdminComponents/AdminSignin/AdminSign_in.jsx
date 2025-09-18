@@ -1,74 +1,75 @@
-import React, { useState } from "react";
-import './AdminSignin.css';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import "./AdminSignin.css"
+import { useNavigate } from "react-router-dom"
 
- function AdminSign_in() {
+function AdminSign_in() {
   const [form, setForm] = useState({
-    email: '',
-    password: ''
-  });
+    email: "",
+    password: "",
+  })
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-    setError('');
-    setSuccess('');
-  };
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+    setError("")
+    setSuccess("")
+  }
 
   const validate = () => {
-    if (!form.email.includes('@')) return "Please enter a valid email.";
+    if (!form.email.includes("@")) return "Please enter a valid email."
     // if (form.password.length < 8) return "Password must be at least 8 characters.";
-    return null;
-  };
+    return null
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const v = validate();
-    if (v) { setError(v); return; }
+    e.preventDefault()
+    const v = validate()
+    if (v) {
+      setError(v)
+      return
+    }
 
-    setLoading(true);
-    setError('');
+    setLoading(true)
+    setError("")
     try {
-      const resp = await fetch('http://localhost:3004/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const resp = await fetch("http://localhost:3004/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: form.email,
-          password: form.password
-        })
-      });
+          password: form.password,
+        }),
+      })
 
-      const data = await resp.json();
-      
-      if (!resp.ok) throw new Error(data.message || 'Login failed');
+      const data = await resp.json()
+
+      if (!resp.ok) throw new Error(data.message || "Login failed")
 
       // Assuming the backend returns { success, token, user, message }
       if (data.success) {
-        
-        console.log("user data", data);
-        localStorage.setItem("admintoken", data.token);
-        localStorage.setItem("admin", JSON.stringify(data.admin));
-        
+        console.log("user data", data)
+        localStorage.setItem("admintoken", data.token)
+        localStorage.setItem("admin", JSON.stringify(data.admin))
 
-        setSuccess(data.message || 'Admin logged in successfully');
+        setSuccess(data.message || "Admin logged in successfully")
         setTimeout(() => {
-      navigate("/Admin/dashboard");
-    }, 1000); 
-        setForm({ email: '', password: '' });
+          navigate("/Admin/dashboard")
+        }, 1000)
+        setForm({ email: "", password: "" })
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || "Login failed")
       }
     } catch (err) {
-      setError(err.message || 'Something went wrong');
+      setError(err.message || "Something went wrong")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="admin-login-wrap">
@@ -80,7 +81,9 @@ import { useNavigate } from "react-router-dom";
 
       <form className="admin-card" onSubmit={handleSubmit} noValidate>
         <div className="brand">
-          <h1>Beyon <span>Ayaat</span></h1>
+          <h1>
+            Beyon <span>Ayaat</span>
+          </h1>
           <p className="tag">Admin Login</p>
         </div>
 
@@ -111,7 +114,7 @@ import { useNavigate } from "react-router-dom";
         <div className="actions">
           <button type="submit" className="btn" disabled={loading}>
             <span className="btn-ink" />
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </div>
 
@@ -121,11 +124,13 @@ import { useNavigate } from "react-router-dom";
         </div>
 
         <div className="note">
-          <small>Admins can access dashboard and manage the platform securely.</small>
+          <small>
+            Admins can access dashboard and manage the platform securely.
+          </small>
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-export { AdminSign_in };
+export { AdminSign_in }

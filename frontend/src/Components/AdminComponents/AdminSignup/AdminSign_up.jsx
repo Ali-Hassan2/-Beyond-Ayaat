@@ -59,7 +59,7 @@ function AdminSign_up() {
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.message || "Signup failed");
 
-      setSuccess(data.message || "Admin account created successfully");
+      // showToast("You have Successfuly Signup !", "success");
       setForm({
         first_name: "",
         last_name: "",
@@ -166,6 +166,7 @@ function AdminSign_up() {
           </small>
         </div>
       </form>
+
     </div>
   );
 }

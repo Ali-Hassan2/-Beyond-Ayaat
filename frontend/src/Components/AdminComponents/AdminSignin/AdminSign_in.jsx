@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import "./AdminSignin.css"
 import { useNavigate } from "react-router-dom"
+// import { showToast } from '../../Utils'
+// import { ToastContainer } from 'react-toastify';
 
 function AdminSign_in() {
   const [form, setForm] = useState({
@@ -56,7 +58,7 @@ function AdminSign_in() {
         localStorage.setItem("admintoken", data.data.token)
         localStorage.setItem("admin", JSON.stringify(data.data.admin))
 
-        setSuccess(data.message || "Admin logged in successfully")
+        showToast("You have Successfuly Login !", "success");
         setTimeout(() => {
           navigate("/Admin/dashboard")
         }, 1000)
@@ -129,6 +131,7 @@ function AdminSign_in() {
           </small>
         </div>
       </form>
+      {/* <ToastContainer /> */}
     </div>
   )
 }

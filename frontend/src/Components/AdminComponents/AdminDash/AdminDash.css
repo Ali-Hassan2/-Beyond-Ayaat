@@ -1,12 +1,65 @@
-.admin1 {
+
+.admindash {
   width: 100%;
-  height: 300px;
-  background: rgb(146, 132, 132);
-  border: 2px solid black;
-  margin-top: 20px;
-  margin-left: 2rem;
-  margin-right: 3rem;
+  height: 100vh;
+  background: rgb(36, 32, 115)
+}
+
+
+.adminmanage {
+  width: 100%;
+  height: 100vh;
+  background: rgb(17, 26, 73);
+  
+}
+
+.heading{
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 40px;
+
+}
+
+.adminmanagecontainer{
+
+  background-color: rgb(54, 68, 142);
+  height: 100vh;
+  border-radius: 10px;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 30px;
+  
+
+}
+
+
+.adminmanagebox{
+
+font-size: 30px;
+
+
+}
+
+.adminmanagebutton{
+background-color: white;
+color: black;
+border: none;
+padding: 10px;
+border-radius: 5px;
+font-weight: bold;
+cursor: pointer;
+margin: 20px;
+
 }

@@ -4,6 +4,7 @@ import './AdminDash.css'
 import { useContext } from 'react'
 import { UserContext } from '../../../Context/UserContext.jsx'
 import { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
 
 function Admin_Dashboard() {
 
@@ -11,9 +12,6 @@ function Admin_Dashboard() {
   const [name2, setName2] = useState("");
   const admintoken = localStorage.getItem("admintoken");
 
-  const handlelogout = () => {
-    localStorage.clear();
-  };
 
   useEffect(() => {
     if (adname) {
@@ -24,16 +22,12 @@ function Admin_Dashboard() {
     }
   });
 
-
-
-
-
   return (
-    <div >
-
+    <div>
+    <div class="admindash" >
       <Admin_Nav />
 <div className="mt-8 px-6">
-  <div className="flex items-start">
+  <div class="dashcontain">
     <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500
                     text-white rounded-full w-40 h-40 flex flex-col 
                     items-center justify-center shadow-xl 
@@ -41,8 +35,12 @@ function Admin_Dashboard() {
       <h1 className="text-lg font-bold">Hi,</h1>
       <p className="text-md font-semibold">{name2} </p>
     </div>
+  
   </div>
 </div>
+    </div>
+   
+
 
     </div>
   )

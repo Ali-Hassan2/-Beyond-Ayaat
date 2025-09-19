@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 
 export default function Admin_Nav() {
   const [isOpen, setIsOpen] = useState(false);
+  
+  const handlelogout = () => {
+    localStorage.clear();
+  };
 
   return (
     <div className="w-full shadow-md">
@@ -11,7 +15,8 @@ export default function Admin_Nav() {
         ADMIN DASHBOARD
       </div>
 
-      <nav className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white px-8 py-5 flex items-center justify-between">
+     <nav className="bg-blue-900 text-white px-8 py-5 flex items-center justify-between">
+
       <div className="text-3xl font-extrabold tracking-wide">Beyond Ayaat</div>
 
       
@@ -21,6 +26,12 @@ export default function Admin_Nav() {
           </li>
           <li className="hover:text-yellow-300 transition">Topic Manage</li>
           <li className="hover:text-yellow-300 transition">Blogs Manage</li>
+          <li className="hover:text-yellow-300 transition">
+            <Link to="/admin/addadmin" >Admin Manage</Link>
+          </li>
+          <li className="hover:text-yellow-300 transition">
+           <Link to="/admin/adminsignin" onClick={handlelogout}>Logout</Link>
+          </li>
         </ul>
 
       

@@ -7,3 +7,4 @@ export { Sign_up } from "./SignupComponent/Sign_up";
 export { AdminSign_up } from "./AdminComponents/AdminSignup/AdminSign_up";
 export { AdminSign_in } from "./AdminComponents/AdminSignin/AdminSign_in";
 export { Admin_Dashboard } from "./AdminComponents/AdminDash/Admin_Dashboard";
+export { Admin_Manage } from "./AdminComponents/AdminDash/Admin_Manage";

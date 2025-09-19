@@ -6,6 +6,7 @@ import {
   AdminDashboard,
   AdminSignin,
   AdminSignup,
+  AdminManage,
 } from "./Pages";
 import "./App.css";
 
@@ -16,6 +17,9 @@ const router = createBrowserRouter([
   { path: "/", element: <Home /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signin", element: <Signin /> },
+  { path: "/admin/addadmin", element: <AdminManage /> },
+
+
 ]);
 
 function App() {

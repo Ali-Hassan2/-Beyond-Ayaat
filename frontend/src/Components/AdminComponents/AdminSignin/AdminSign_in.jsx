@@ -53,8 +53,8 @@ function AdminSign_in() {
       // Assuming the backend returns { success, token, user, message }
       if (data.success) {
         console.log("user data", data)
-        localStorage.setItem("admintoken", data.token)
-        localStorage.setItem("admin", JSON.stringify(data.admin))
+        localStorage.setItem("admintoken", data.data.token)
+        localStorage.setItem("admin", JSON.stringify(data.data.admin))
 
         setSuccess(data.message || "Admin logged in successfully")
         setTimeout(() => {

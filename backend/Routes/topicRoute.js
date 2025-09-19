@@ -1,7 +1,10 @@
 const express = require("express");
-const { givetopics } = require("../Controllers/topicController");
+const {
+  givetopics,
+  singletopicget,
+} = require("../Controllers/topicController");
 const router = express.Router();
 
 router.get("/gettopics", givetopics);
-
+router.get("/gettopic/:id", singletopicget);
 module.exports = router;

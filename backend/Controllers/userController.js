@@ -1,8 +1,11 @@
 const User = require("../Models/user-model");
 const dotenv = require("dotenv");
+const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const oauth2Client = require("../Utils/googleapiConfig");
 const z = require("zod");
+const sendResponse = require("../Utils/send-response");
 dotenv.config();
 
 const userSignup = async (req, res) => {
@@ -132,5 +135,76 @@ const userLogin = async (req, res) => {
     });
   }
 };
+const greet = async (req, res) => {};
 
-module.exports = { userLogin, userSignup };
+const logout = async (req, res) => {
+  try {
+    if (!req.cookie.jwt) {
+      return res.status(400).json({
+        success: false,
+        message: "Please login first.",
+      });
+    }
+    res.clearCookie("jwt");
+    return res.status(200).send({
+      success: false,
+      message: "Logout successfully.",
+    });
+  } catch (error) {
+    console.log("There is an error:", error);
+    return res.status(505).send({
+      success: false,
+      message: "Internal Server Error.",
+      error: error?.message,
+    });
+  }
+};
+
+const googlelogin = async (req, res) => {
+  try {
+    const code = req.body?.code;
+
+    if (!code) {
+      return sendResponse(res, 400, false, "Authorization code is missing");
+    }
+
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`
+    );
+
+    const { email, name, picture } = userRes.data;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({ email, name, picture });
+    }
+
+    const payload = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_PASSWORD, {
+      expiresIn: "365d",
+    });
+
+    return sendResponse(res, 200, true, "Logged in successfully", {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Google Login Error:", error.message);
+    return sendResponse(res, 500, false, "Google login failed", error.message);
+  }
+};
+
+module.exports = { userLogin, userSignup, googlelogin, logout };

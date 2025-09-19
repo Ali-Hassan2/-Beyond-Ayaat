@@ -6,18 +6,21 @@ function LandingBoxes({ box }) {
     <div className="flip-box w-full sm:w-[45%] md:w-[18%] h-[260px] m-2">
       <div className="flip-box-inner shadow-2xl rounded-2xl">
         <div className="flip-box-front bg-white/10 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center p-4 text-white">
-          {box.image}
+          <div
+          dangerouslySetInnerHTML={{ __html: box.icon }}
+          className ="w-10 h-10"
+          />
           <h1 className="text-lg font-semibold mt-4 text-center">
-            {box.label}
+            {box.title}
           </h1>
         </div>
 
         <div className="flip-box-back  rounded-2xl flex flex-col items-center justify-center p-4 text-black text-center">
           <h1 className="text-xl font-bold mb-2 " style={{ color: "#48AFB6" }}>
-            {box.label}
+            {box.title}
           </h1>
           <p className="text-sm " style={{ color: "#FFFFFF" }}>
-            {box.desc}
+            {box.description}
           </p>
           <button className="mt-5 rounded-full text-sm w-[100px] h-[40px] text-white border border-white hover:bg-[#48AFB6] cursor-pointer hover:border-none transition duration-300 ease-in-out">
             Go There

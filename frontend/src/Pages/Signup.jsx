@@ -1,16 +1,11 @@
-import React from 'react'
-import { Sign_up } from '../Components/SignupComponent'
-
-
+import React from "react";
+import { Sign_up } from "../Components";
 const Signup = () => {
   return (
-    
     <div>
-     <Sign_up />
-
-
+      <Sign_up />
     </div>
-  )
-}
+  );
+};
 
-export { Signup } 
+export { Signup };

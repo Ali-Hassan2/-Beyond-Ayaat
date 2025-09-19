@@ -5,20 +5,20 @@ const userSchema = new mongoose.model(
     {
       first_name: {
         type: String,
-        required: true,
+        required: false,
       },
       last_name: {
         type: String,
-        required: true,
+        required: false,
       },
       email: {
         type: String,
-        required: true,
+        required: false,
         unique: true,
       },
       password: {
         type: String,
-        required: true,
+        required: false,
         unique: true,
       },
     },

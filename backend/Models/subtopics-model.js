@@ -12,12 +12,18 @@ const subtopicSchema = new mongoose.model(
         required: true,
       },
       topic_id: {
-        type: mongoose.Type.Schema.ObjectId,
-        ref: "topicSchema",
+        type: mongoose.Schema.Types.ObjectId,
+
+        ref: "topic",
         required: true,
       },
       image: {
-        type: String,
+        public_id: {
+          type: String,
+        },
+        url: {
+          type: String,
+        },
       },
       summary: {
         type: String,

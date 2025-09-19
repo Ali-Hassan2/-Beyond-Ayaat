@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Home2, Home3, Landing } from "../Components/HomeComponents";
+import { Landing, Navbar, Home2, Home3 } from "../Components";
 function Home() {
   return (
     <div>
@@ -10,4 +10,4 @@ function Home() {
   );
 }
 
-export  { Home };
+export { Home };

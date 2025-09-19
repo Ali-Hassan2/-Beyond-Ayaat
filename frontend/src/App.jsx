@@ -1,21 +1,25 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import {Home} from './Pages/Home';
-import {Signin} from './Pages/Signin';
-import {Signup} from './Pages/Signup';
-import './App.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  Home,
+  Signin,
+  Signup,
+  AdminDashboard,
+  AdminSignin,
+  AdminSignup,
+  AdminManage,
+} from "./Pages";
+import "./App.css";
 
 const router = createBrowserRouter([
-  { path: '/',
-   element: <Home /> },
+  { path: "/admin/dashboard", element: <AdminDashboard /> },
+  { path: "/admin/adminsignin", element: <AdminSignin /> },
+  { path: "/admin/adminsignup", element: <AdminSignup /> },
+  { path: "/", element: <Home /> },
+  { path: "/signup", element: <Signup /> },
+  { path: "/signin", element: <Signin /> },
+  { path: "/admin/addadmin", element: <AdminManage /> },
 
-   { path: '/signup',
-    element: < Signup /> },
-   
 
-
-  { path: '/signin', 
-   element: <Signin /> },
-   
 ]);
 
 function App() {

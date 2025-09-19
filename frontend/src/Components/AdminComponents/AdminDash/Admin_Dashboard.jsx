@@ -1,5 +1,5 @@
 import React from "react"
-import Admin_Nav from "./Admin_Nav"
+import { Admin_Nav } from "./Admin_Nav"
 import "./AdminDash.css"
 import { useContext } from "react"
 import { UserContext } from "../../../Context/UserContext.jsx"

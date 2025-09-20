@@ -2,7 +2,12 @@ import React from "react"
 import { Link } from "react-router-dom"
 import "./AdminDash.css"
 
+
+
 const Admin_Manage = () => {
+  
+
+
   return (
     <div class="adminmanage">
       <div>
@@ -12,14 +17,20 @@ const Admin_Manage = () => {
         <div class="adminmanagebox">
           <h3>All Admins List:</h3>
         </div>
-        <div>
-          <button class="adminmanagebutton">
-            <Link to="/admin/adminsignup">Add Admin</Link>
-          </button>
-          <button class="adminmanagebutton">
-            <Link>Remove Admin</Link>
-          </button>
-        </div>
+
+
+        
+            <div>
+                <button class="adminmanagebutton" >
+                    Add Admin
+                </button>
+                 <button class="adminmanagebutton">
+                    <Link>Remove Admin</Link>
+                </button>
+            </div>
+
+
+       
       </div>
     </div>
   )

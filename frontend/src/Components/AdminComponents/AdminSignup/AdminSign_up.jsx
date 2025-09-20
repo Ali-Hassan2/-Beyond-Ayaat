@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import "./AdminSignup.css";
-import { useNavigate } from "react-router-dom";
+
 import { showToast } from "../../../Utils";
 import { ToastContainer } from "react-toastify";
 
+
 function AdminSign_up() {
+ 
+  
+
+
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -79,6 +84,7 @@ function AdminSign_up() {
 
   return (
     <div className="admin-signup-wrap">
+      
       <div className="bg-orbs" aria-hidden="true">
         <div className="orb orb-1" />
         <div className="orb orb-2" />

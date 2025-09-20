@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import {
   Home,
   Signin,
@@ -7,8 +7,8 @@ import {
   AdminSignin,
   AdminSignup,
   AdminManage,
-} from "./Pages";
-import "./App.css";
+} from "./Pages"
+import "./App.css"
 
 const router = createBrowserRouter([
   { path: "/admin/dashboard", element: <AdminDashboard /> },
@@ -18,16 +18,14 @@ const router = createBrowserRouter([
   { path: "/signup", element: <Signup /> },
   { path: "/signin", element: <Signin /> },
   { path: "/admin/addadmin", element: <AdminManage /> },
-
-
-]);
+])
 
 function App() {
   return (
     <div>
       <RouterProvider router={router} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,16 +1,11 @@
 import React from 'react'
 import './AdminDash.css'
 import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+
 
 
 const Admin_Manage = () => {
-    const navigate = useNavigate();
-
-    const gotoSignup=()=>{
-        navigate("/admin/adminsignup",{state: { fromDashboard: true }});
-    };
-
+  
 
 
   return (
@@ -25,7 +20,7 @@ const Admin_Manage = () => {
                
             </div>
             <div>
-                <button class="adminmanagebutton" onClick={gotoSignup} >
+                <button class="adminmanagebutton" >
                     Add Admin
                 </button>
                  <button class="adminmanagebutton">

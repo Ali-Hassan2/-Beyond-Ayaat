@@ -5,15 +5,10 @@ import "./AdminSignup.css";
 
 import { showToast } from "../../../Utils";
 import { ToastContainer } from "react-toastify";
-import { useLocation, Navigate } from "react-router-dom";
+
 
 function AdminSign_up() {
-  const location = useLocation();
-
-  if(!location.state?.fromDashboard){
-    return <Navigate to="/admin/dashboard" replace />;
-  
-  }
+ 
   
 
 

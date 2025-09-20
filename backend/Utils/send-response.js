@@ -1,10 +1,10 @@
 const sendResponse = (
   res,
-  statusCode,
-  success,
-  message,
-  data = null,
-  errors = []
+  statusCode, // HTTP status code
+  success, // true/false
+  message, // response message
+  data = null, // optional response payload
+  errors = [] // optional array of error messages
 ) => {
   const responsePayload = {
     success,

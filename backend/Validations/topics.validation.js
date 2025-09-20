@@ -1,4 +1,4 @@
-const z = require("zod");
+const z = require("z");
 
 const topicvalidation = z.object({
   title: z.string().min(3, {

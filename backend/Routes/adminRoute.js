@@ -1,19 +1,8 @@
-const express = require("express")
-const {
-  adminLogin,
-  adminSignup,
-  logout,
-  getadmins,
-  deleteadmin,
-  updateadmin,
-} = require("../Controllers/adminController")
-const { adminmiddle } = require("../Middlewares/adminmiddleware")
-const router = express.Router()
+const express = require("express");
+const { adminLogin, adminSignup } = require("../Controllers/adminController");
+const router = express.Router();
 
-router.post("/login", adminLogin)
-router.post("/signup", adminmiddle, adminSignup)
-router.post("/logout", adminmiddle, logout)
-router.get("/amgm/getadmins", adminmiddle, getadmins)
-router.delete("/amgm/deleteadmin/:id", adminmiddle, deleteadmin)
-router.put("/amgm/updateadmin/:id", adminmiddle, updateadmin)
-module.exports = router
+router.post("/login", adminLogin);
+router.post("/signup", adminSignup);
+
+module.exports = router;

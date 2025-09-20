@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import "./AdminSignup.css";
-
+import { useNavigate } from "react-router-dom";
 import { showToast } from "../../../Utils";
 import { ToastContainer } from "react-toastify";
-
+import { useLocation, Navigate } from "react-router-dom";
 
 function AdminSign_up() {
- 
-  
+  const location = useLocation();
+  if(!location.state?.fromDashboard){
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
 
 
   const [form, setForm] = useState({
@@ -84,7 +87,6 @@ function AdminSign_up() {
 
   return (
     <div className="admin-signup-wrap">
-      
       <div className="bg-orbs" aria-hidden="true">
         <div className="orb orb-1" />
         <div className="orb orb-2" />

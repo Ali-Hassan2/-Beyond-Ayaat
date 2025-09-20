@@ -5,11 +5,23 @@ import { useContext } from "react"
 import { UserContext } from "../../../Context/UserContext.jsx"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function Admin_Dashboard() {
   const { adname } = useContext(UserContext)
-  const [name2, setName2] = useState("")
-  // const admintoken = localStorage.getItem("admintoken") TODO://
+  const [name2, setName2] = useState("") 
+  const navigate = useNavigate();
+ 
+const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    const admintoken = localStorage.getItem("admintoken");
+    if (!admintoken) {
+      navigate("/admin/adminsignin", { replace: true });
+    } else {
+      setIsChecking(false); // only show dashboard if valid token
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (adname) {

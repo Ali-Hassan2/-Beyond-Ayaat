@@ -27,7 +27,7 @@ function Admin_Dashboard() {
     <div class="admindash" >
       <Admin_Nav />
 <div className="mt-8 px-6">
-  <div class="dashcontain">
+  <div class="dashcontain" >
     <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500
                     text-white rounded-full w-40 h-40 flex flex-col 
                     items-center justify-center shadow-xl 

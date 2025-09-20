@@ -1,10 +1,10 @@
-import React from 'react'
-import { Admin_Manage } from '../../Components/AdminComponents/AdminDash/Admin_Manage.jsx'
+import React from "react"
+import { Admin_Manage } from "../../Components"
 
 const AdminManage = () => {
   return (
     <div>
-        <Admin_Manage />
+      <Admin_Manage />
     </div>
   )
 }

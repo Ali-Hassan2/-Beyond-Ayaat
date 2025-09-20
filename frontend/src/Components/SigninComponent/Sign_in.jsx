@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 import { googleAuth } from "../../api/google_api";
+import { showToast } from "../../Utils";
+import { ToastContainer } from "react-toastify";
 function Sign_in() {
   const navigate = useNavigate();
   const [token, settoken] = useState("");
@@ -31,7 +33,7 @@ function Sign_in() {
 
 
       if (response.data.success) {
-        console.log("user datat",response.data)
+        showToast("You have Successfuly Signup !", "success");
         
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -122,6 +124,7 @@ function Sign_in() {
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
       </div>
+      <ToastContainer />
     </div>
   );
 }

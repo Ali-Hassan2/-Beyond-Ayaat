@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import "./AdminSignup.css";
+import { useNavigate } from "react-router-dom";
+import { showToast } from "../../../Utils";
+import { ToastContainer } from "react-toastify";
 
 function AdminSign_up() {
   const [form, setForm] = useState({
@@ -59,7 +62,7 @@ function AdminSign_up() {
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.message || "Signup failed");
 
-      setSuccess(data.message || "Admin account created successfully");
+      showToast("You have Successfuly Signup !", "success");
       setForm({
         first_name: "",
         last_name: "",
@@ -166,6 +169,8 @@ function AdminSign_up() {
           </small>
         </div>
       </form>
+      <ToastContainer />
+
     </div>
   );
 }

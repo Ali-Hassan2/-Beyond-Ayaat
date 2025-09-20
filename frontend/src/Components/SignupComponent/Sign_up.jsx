@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './Sign_up.css';
 import { Link } from "react-router-dom";
+import { showToast } from '../../Utils';
+import { ToastContainer } from 'react-toastify';
 
 function Sign_up() {
   const [formData, setFormData] = useState({
@@ -37,7 +39,8 @@ function Sign_up() {
       });
 
       if (response.data.success) {
-        setMessage("Signup successful!");
+        showToast("You have Successfuly Signup !", "success");
+      
         setFormData({
           first_name: '',
           last_name: '',
@@ -107,6 +110,7 @@ function Sign_up() {
           Already have an account? <Link to="/signin">Login here</Link>
         </p>
       </div>
+      <ToastContainer />
     </div>
   );
 }

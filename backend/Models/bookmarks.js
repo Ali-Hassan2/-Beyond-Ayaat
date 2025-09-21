@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 const bookmarksSchema = new mongoose.model(
   "bookmarks",
   mongoose.Schema(
@@ -14,5 +14,5 @@ const bookmarksSchema = new mongoose.model(
     },
     { timestamps: true }
   )
-);
-module.exports = bookmarksSchema;
+)
+module.exports = bookmarksSchema

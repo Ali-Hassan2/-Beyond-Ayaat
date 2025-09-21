@@ -1,7 +1,8 @@
 const mongoose = require("mongoose")
+
 const blogsSchema = new mongoose.model(
   "blogsSchema",
-  mongoose.Schema(
+  new mongoose.Schema(
     {
       user_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -11,31 +12,36 @@ const blogsSchema = new mongoose.model(
       title: {
         type: String,
         trim: true,
-        required: true,
+        default: "",
+        required: false,
       },
-      created_at: {
+      createdAt: {
         type: Date,
-        required: true,
         default: Date.now,
       },
       topic_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "topicSchema",
-        required: true,
+        default: null,
       },
-      status:{
-        type:string,
-        enum:["draft","published"],
-        default:"draft"
+      status: {
+        type: String,
+        enum: ["draft", "published"],
+        default: "draft",
       },
       subtopic_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "subtopicSchema",
-        required: true,
+        default: null,
       },
       content: {
         type: String,
-        required: true,
+        default: "",
+        required: false,
+      },
+      image: {
+        public_id: { type: String },
+        url: { type: String },
       },
     },
     { timestamps: true }

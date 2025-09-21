@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const quranayahSchema = new mongoose.model(
   "quranayah",
@@ -31,5 +31,5 @@ const quranayahSchema = new mongoose.model(
     },
     { timestamps: true }
   )
-);
-module.exports = quranayahSchema;
+)
+module.exports = quranayahSchema

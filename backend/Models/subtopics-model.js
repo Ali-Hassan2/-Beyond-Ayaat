@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 const subtopicSchema = new mongoose.model(
   "subtopics",
   mongoose.Schema(
@@ -32,6 +32,6 @@ const subtopicSchema = new mongoose.model(
     },
     { timestamps: true }
   )
-);
+)
 
-module.exports = subtopicSchema;
+module.exports = subtopicSchema

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 const mediaSchema = new mongoose.model(
   "media",
   mongoose.Schema(
@@ -20,5 +20,5 @@ const mediaSchema = new mongoose.model(
     },
     { timestamps: true }
   )
-);
-module.exports = mediaSchema;
+)
+module.exports = mediaSchema

@@ -15,6 +15,15 @@ const contentValidation = z
   .min(10, { message: "Content should be minimum 10 chars long" })
   .max(500, { message: "Content should not exceed 500 chars" })
 
+const statusValidation = z.string()
+
+const imageValidation = z
+  .object({
+    public_id: z.string().optional(),
+    url: z.string().optional(),
+  })
+  .optional()
+
 const blogsValidation = z.object({
   userId: userIdValidation,
   subtopicId: subtopicIdValidation,
@@ -22,6 +31,8 @@ const blogsValidation = z.object({
   createdAt: createdAtValidation,
   title: titleValidation,
   content: contentValidation,
+  image: imageValidation,
+  status: statusValidation,
 })
 
 module.exports = blogsValidation

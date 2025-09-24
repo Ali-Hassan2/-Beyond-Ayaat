@@ -307,12 +307,28 @@ const giveComment = async (req, res) => {
   }
 }
 
-const getallblogs = async (req, res) => {}
+const getRandomBlogs = async (req, res) => {
+  try {
+    const { limit = 5 } = req.query
+
+    // applying aggregation
+    const blogs = await blogsSchema.aggregate([
+      { $match: { status: "published" } },
+      { $sample: { size: Number(limit) } },
+    ])
+    return sendResponse(res, 200, true, "Blogs Reterived Successfully", blogs)
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Internal Server error", [
+      error?.message,
+    ])
+  }
+}
 
 module.exports = {
   writeDraftBlog,
   completeBlog,
   publishBlog,
   giveComment,
-  getallblogs,
+  getRandomBlogs,
 }

@@ -2,6 +2,7 @@ const express = require("express")
 const blogsValidation = require("../Validations/blogs.schema")
 const sendResponse = require("../Utils/send-response")
 const blogsSchema = require("../Models/blogs-model")
+const commentsValidation = require("../Validations/comment.schema")
 const cloudinary = require("cloudinary").v2
 // const writeBlog = async (req, res) => {
 //   const blogsSafeVal = blogsValidation.safeParse(req.body)
@@ -98,24 +99,30 @@ const cloudinary = require("cloudinary").v2
 // }
 
 const writeDraftBlog = async (req, res) => {
-  const parseResult = blogsValidation.pick({ userId: true }).safeParse(req.body)
-  if (!parseResult.success) {
-    return sendResponse(
-      res,
-      400,
-      false,
-      "Complete the input",
-      parseResult.error.issues.map((err) => err?.message)
-    )
-  }
+  // const parseResult = blogsValidation.pick({ userId: true }).safeParse(req.body)
+  // if (!parseResult.success) {
+  //   return sendResponse(
+  //     res,
+  //     400,
+  //     false,
+  //     "Complete the input",
+  //     parseResult.error.issues.map((err) => err?.message)
+  //   )
+  // }
 
   try {
-    const { userId } = req.body
-    if (!userId) {
-      return sendResponse(res, 400, false, "userId is not given.")
+    const { id } = req.userid
+    console.log("The userIIDDDD is:", id)
+    if (!id) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Only Authenticated User can write Blog."
+      )
     }
     const draftBlod = new blogsSchema({
-      user_id: userId,
+      user_id: id,
       title: "",
       content: "",
       createdAt: "",
@@ -124,7 +131,7 @@ const writeDraftBlog = async (req, res) => {
       status: "draft",
     })
     await draftBlod.save()
-    return sendResponse(res, 200, true, "Your Blog saved in Drafts")
+    return sendResponse(res, 200, true, "Your Blog saved in Drafts", draftBlod)
   } catch (error) {
     console.log("There is an error while saving the draft blog", error)
     sendResponse(res, 500, false, "Internal Server error", [error?.message])
@@ -154,29 +161,70 @@ const completeBlog = async (req, res) => {
     if (!allowed_formats.includes(image.mimetype)) {
       return sendResponse(res, 400, false, "Sorry this format is not al")
     }
-    const uploadResult = cloudinary.uploader.upload(image.tempFilePath)
+    const uploadResult = await cloudinary.uploader.upload(image.tempFilePath)
     if (!uploadResult || uploadResult.error) {
       return sendResponse(res, 400, false, "Sorry cannot upload image,")
     }
     let updatedData = { ...req.body }
-    let updateddData = { ...updatedData, ...parseResult.data }
-    console.log("The updated data we got is:", updatedData)
-    updatedData.image = {
-      public_id: (await uploadResult).public_id,
-      url: (await uploadResult).url,
+    let updateddData = {
+      ...updatedData,
+      ...parseResult.data,
+      image: {
+        public_id: uploadResult.public_id,
+        url: uploadResult.url,
+      },
     }
-
-    const completed_Blog = await blogsSchema.findByIdAndUpdate(
-      blog_id,
-      updateddData,
-      { new: true }
-    )
+    const completed_Blog = await blogsSchema
+      .findByIdAndUpdate(blog_id, updateddData, { new: true })
+      .populate("user_id", "first_name last_name")
+      .populate("topic_id", "title description")
+      .populate("subtopic_id", "title description")
+      .populate("comments.user_id", "first_name last_name")
+    if (!completed_Blog) {
+      return sendResponse(res, 400, false, "No Blog found.")
+    }
+    const formattedBlogData = {
+      _id: completed_Blog._id,
+      title: completed_Blog.title,
+      content: completed_Blog.content,
+      image: completed_Blog.image,
+      status: completed_Blog.status,
+      user: {
+        _id: completed_Blog.user_id._id,
+        first_name: completed_Blog.user_id?.first_name,
+        last_name: completed_Blog.user_id?.last_name,
+      },
+      topic: completed_Blog.topic_id
+        ? {
+            _id: completed_Blog.topic_id._id,
+            name: completed_Blog.topic_id?.title,
+            description: completed_Blog.topic_id?.description,
+            subtopic: completed_Blog.subtopic_id
+              ? {
+                  _id: completed_Blog.subtopic_id._id,
+                  name: completed_Blog.subtopic_id?.title,
+                  description: completed_Blog.subtopic_id?.description,
+                }
+              : null,
+          }
+        : null,
+      comments: completed_Blog.comments.map((cmt) => ({
+        _id: cmt._id,
+        content: cmt.content,
+        createdAt: cmt.createdAt,
+        user: {
+          id: cmt.user_id.id,
+          first_name: cmt.user_id?.first_name,
+          last_name: cmt.user_id?.last_name,
+        },
+      })),
+    }
     return sendResponse(
       res,
       200,
       true,
       "Blog Completed Successfully",
-      completed_Blog
+      formattedBlogData
     )
   } catch (error) {
     console.log("There is an error while completing the blog", error)
@@ -188,7 +236,6 @@ const completeBlog = async (req, res) => {
 
 const publishBlog = async (req, res) => {
   const parseResult = blogsValidation.pick({ status: true }).safeParse(req.body)
-
   if (!parseResult.success) {
     return sendResponse(
       res,
@@ -201,7 +248,6 @@ const publishBlog = async (req, res) => {
   try {
     const { blog_id } = req.query
     const { status } = req.body
-
     if (!blog_id) {
       return sendResponse(res, 400, false, "No Blog id Provided.")
     }
@@ -212,7 +258,6 @@ const publishBlog = async (req, res) => {
       },
       { new: true, runValidators: true }
     )
-
     if (!updated_Blog) {
       return sendResponse(res, 400, false, "No Blog found with this blogId")
     }
@@ -223,4 +268,54 @@ const publishBlog = async (req, res) => {
   }
 }
 
-module.exports = { writeDraftBlog, completeBlog, publishBlog }
+const giveComment = async (req, res) => {
+  const parseResult = commentsValidation.safeParse(req.body)
+  if (!parseResult.success) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate the input",
+      parseResult.error.issues.map((err) => err?.message)
+    )
+  }
+  try {
+    const { blog_id } = req.query
+    const { content, createdAt } = parseResult.data
+    const { id } = req.userid
+    if (!id) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "You need to login to the system to give a comment."
+      )
+    }
+    const finded_blog = await blogsSchema
+      .findById(blog_id)
+      .populate("user_id", "first_name last_name")
+    if (!finded_blog) {
+      return sendResponse(res, 400, false, "No blog found.")
+    }
+    finded_blog.comments.push({ user_id: id, content, createdAt })
+    await finded_blog.save()
+    const lastComment = finded_blog.comments[finded_blog.comments.length - 1]
+    const formatted_Comment = {
+      _id: lastComment._id,
+      content: lastComment.content,
+      createdAt: lastComment.createdAt,
+      User: {
+        _id: finded_blog.user_id?._id,
+        first_name: finded_blog.user_id?.first_name,
+        last_name: finded_blog.user_id?.last_name,
+      },
+    }
+
+    return sendResponse(res, 200, true, "Comment Added.", formatted_Comment)
+  } catch (error) {
+    console.log("There is an error while writing comment", error)
+    return sendResponse(res, 500, false, "There is an issue", [error?.message])
+  }
+}
+
+module.exports = { writeDraftBlog, completeBlog, publishBlog, giveComment }

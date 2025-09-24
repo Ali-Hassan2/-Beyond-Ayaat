@@ -3,24 +3,25 @@ const jwt = require("jsonwebtoken")
 const sendResponse = require("../Utils/send-response")
 
 dotenv.config()
-const adminmiddle = async (req, res, next) => {
+const usermiddle = async (req, res, next) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith("Bearer")) {
     return sendResponse(res, 400, false, "No token provided")
   }
 
   const token = authHeader.split(" ")[1]
-  console.log("The token is:", token)
+  console.log("We got the token", token)
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ADMIN_PASSWORD)
-    req.adminid = decoded.id
+    const decoded = jwt.verify(token, process.env.JWT_PASSWORD)
+    req.userid = decoded
+    console.log("The user id is:", req.userid)
     next()
   } catch (error) {
-    console.log("Error in admin middleware:", error)
-    return sendResponse(res, 401, false, "Invalid or expired token", null, [
-      error.message,
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "There is an Internal Server Error", [
+      error?.message,
     ])
   }
 }
 
-module.exports = { adminmiddle }
+module.exports = usermiddle

@@ -1,12 +1,12 @@
 const mongoose = require("mongoose")
-
+const commentsSchema = require("./comment-model")
 const blogsSchema = new mongoose.model(
   "blogsSchema",
   new mongoose.Schema(
     {
       user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "userSchema",
+        ref: "user",
         required: true,
       },
       title: {
@@ -21,7 +21,7 @@ const blogsSchema = new mongoose.model(
       },
       topic_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "topicSchema",
+        ref: "topic",
         default: null,
       },
       status: {
@@ -31,7 +31,7 @@ const blogsSchema = new mongoose.model(
       },
       subtopic_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "subtopicSchema",
+        ref: "subtopics",
         default: null,
       },
       content: {
@@ -42,6 +42,10 @@ const blogsSchema = new mongoose.model(
       image: {
         public_id: { type: String },
         url: { type: String },
+      },
+      comments: {
+        type: [commentsSchema],
+        default: [],
       },
     },
     { timestamps: true }

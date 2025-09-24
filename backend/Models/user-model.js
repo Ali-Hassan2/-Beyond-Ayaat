@@ -21,6 +21,13 @@ const userSchema = new mongoose.model(
         required: false,
         unique: true,
       },
+      savedBlogs: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "blogsSchema",
+          default: [],
+        },
+      ],
     },
     { timestamps: true }
   )

@@ -99,17 +99,6 @@ const cloudinary = require("cloudinary").v2
 // }
 
 const writeDraftBlog = async (req, res) => {
-  // const parseResult = blogsValidation.pick({ userId: true }).safeParse(req.body)
-  // if (!parseResult.success) {
-  //   return sendResponse(
-  //     res,
-  //     400,
-  //     false,
-  //     "Complete the input",
-  //     parseResult.error.issues.map((err) => err?.message)
-  //   )
-  // }
-
   try {
     const { id } = req.userid
     console.log("The userIIDDDD is:", id)
@@ -318,4 +307,12 @@ const giveComment = async (req, res) => {
   }
 }
 
-module.exports = { writeDraftBlog, completeBlog, publishBlog, giveComment }
+const getallblogs = async (req, res) => {}
+
+module.exports = {
+  writeDraftBlog,
+  completeBlog,
+  publishBlog,
+  giveComment,
+  getallblogs,
+}

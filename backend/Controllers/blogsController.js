@@ -312,11 +312,63 @@ const getRandomBlogs = async (req, res) => {
     const { limit = 5 } = req.query
 
     // applying aggregation
-    const blogs = await blogsSchema.aggregate([
-      { $match: { status: "published" } },
-      { $sample: { size: Number(limit) } },
-    ])
-    return sendResponse(res, 200, true, "Blogs Reterived Successfully", blogs)
+    const blogs = await blogsSchema
+      .find({ status: "published" })
+      .populate("user_id", "first_name last_name")
+      .populate("topic_id", "title description")
+      .populate("subtopic_id", "title description")
+      .populate("comments.user_id", "first_name last_name")
+      .limit(Number(limit))
+      .sort({ $natural: -1 })
+
+    const formattedBlogData = blogs.map((blog) => ({
+      _id: blog._id,
+      title: blog.title,
+      content: blog.content,
+      image: blog.image,
+      status: blog.status,
+      user: blog.user_id
+        ? {
+            _id: blog.user_id._id,
+            first_name: blog.user_id.first_name,
+            last_name: blog.user_id.last_name,
+          }
+        : null,
+      topic: blog.topic_id
+        ? {
+            _id: blog.topic_id._id,
+            title: blog.topic_id.title,
+            description: blog.topic_id.description,
+            subtopic: blog.subtopic_id
+              ? {
+                  _id: blog.subtopic_id._id,
+                  title: blog.subtopic_id.title,
+                  description: blog.subtopic_id.description,
+                }
+              : null,
+          }
+        : null,
+      comments:
+        blog.comments?.map((cmt) => ({
+          _id: cmt._id,
+          content: cmt.content,
+          createdAt: cmt.createdAt,
+          user: cmt.user_id
+            ? {
+                _id: cmt.user_id._id,
+                first_name: cmt.user_id.first_name,
+                last_name: cmt.user_id.last_name,
+              }
+            : null,
+        })) || [],
+    }))
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Blogs Reterived Successfully",
+      formattedBlogData
+    )
   } catch (error) {
     console.log("There is an error", error)
     return sendResponse(res, 500, false, "Internal Server error", [

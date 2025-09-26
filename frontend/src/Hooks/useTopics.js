@@ -1,31 +1,22 @@
-import { useState,useEffect } from "react"; 
-import { getTopics } from "../Services/topicsservice";
+import { useState, useEffect } from "react"
+import { getTopics } from "../Services/topicsservice"
 
-export const useTopics=()=>{
-const [ topics,setTopics] = useState(null);
-const [ loading , setLoading ]= useState(true);
-const [ error, setError] =useState(null);
+export const useTopics = () => {
+  const [topics, setTopics] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-
-useEffect(()=>{
-
+  useEffect(() => {
     getTopics()
-    .then(data =>{
-        setTopics(data);
-        setLoading(false);
-    })
-    .catch(err=>{
-        setError(true);
-        setLoading(false);
-    });
+      .then((data) => {
+        setTopics(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setError(true)
+        setLoading(false)
+      })
+  }, [])
 
-
-
-},[]);
-
-return {  topics,loading,error };
-};
-
-
-
-
+  return { topics, loading, error }
+}

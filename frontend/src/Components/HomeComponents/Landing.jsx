@@ -6,7 +6,7 @@ import { FaEarthAfrica } from "react-icons/fa6";
 import { TbGalaxy } from "react-icons/tb";
 import { GiHumanPyramid } from "react-icons/gi";
 import { useTopics } from "../../Hooks/useTopics";
-
+import { Link } from "react-router-dom";
 
 
 // const box_Data = [
@@ -70,10 +70,10 @@ function Landing({ props }) {
           className="w-full sm:w-[200px] h-[50px] text-[16px] sm:text-[20px] rounded-md text-white cursor-pointer"
           style={{ backgroundColor: "#48AFB6" }}
         >
-          Start Exploring
+         <Link> Start Exploring</Link>  
         </button>
         <button className="w-full sm:w-[250px] h-[50px] text-[16px] sm:text-[20px] rounded-md border border-white/30 text-white cursor-pointer">
-          Read About the Vision
+          <Link> Read About the Vision</Link>
         </button>
       </div>
       <div className="boxes flex flex-wrap mt-10 justify-center gap-[50px] overflow-hidden">

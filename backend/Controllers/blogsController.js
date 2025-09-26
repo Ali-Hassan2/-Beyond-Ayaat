@@ -3,6 +3,7 @@ const blogsValidation = require("../Validations/blogs.schema")
 const sendResponse = require("../Utils/send-response")
 const blogsSchema = require("../Models/blogs-model")
 const commentsValidation = require("../Validations/comment.schema")
+const commentSchema = require("../Models/comment-model")
 const cloudinary = require("cloudinary").v2
 // const writeBlog = async (req, res) => {
 //   const blogsSafeVal = blogsValidation.safeParse(req.body)
@@ -377,10 +378,90 @@ const getRandomBlogs = async (req, res) => {
   }
 }
 
+const editBlog = async (req, res) => {
+  const parseResult = blogsValidation.partial().safeParse(req.body)
+  if (!parseResult.success) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate your input",
+      parseResult.error.issues.map((err) => err?.message)
+    )
+  }
+  try {
+    const updating_data = { ...parseResult.data, status: "published" }
+    console.log("The data we got is:", updating_data)
+    const { blog_id } = req.query
+    const isExist = await blogsSchema.findById(blog_id)
+    if (!isExist) {
+      return sendResponse(res, 400, false, "No blog found with this id.")
+    }
+    const target = await blogsSchema.findByIdAndUpdate(blog_id, updating_data, {
+      new: true,
+    })
+    return sendResponse(res, 200, true, "Blog updated successfully.")
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "There is an error", [error?.issue])
+  }
+}
+
+const removeBlog = async (req, res) => {
+  const { blog_id } = req.query
+  if (!blog_id) {
+    return sendResponse(res, 400, false, "Please provide blog id")
+  }
+  try {
+    const isdeleted = await blogsSchema.findByIdAndDelete(blog_id)
+    if (!isdeleted) {
+      return sendResponse(res, 400, false, "No Blog found with this id.")
+    }
+    return sendResponse(res, 200, true, "Blog deleted successfully.")
+  } catch (error) {
+    console.log("There is an error ", error)
+    return sendResponse(res, 500, false, "Internal Server Error", [
+      error?.message,
+    ])
+  }
+}
+
+const deleteComment = async (req, res) => {
+  const { comment_id, blog_id } = req.query
+  if (!comment_id || !blog_id) {
+    return sendResponse(res, 400, false, "Please provide comment id.")
+  }
+  try {
+    const updatedBlog = await blogsSchema.findByIdAndUpdate(
+      blog_id,
+      { $pull: { comments: { _id: comment_id } } },
+      { new: true }
+    )
+    if (!updatedBlog) {
+      return sendResponse(res, 400, false, "Blog or comment not found")
+    }
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Comment deleted successfully",
+      updatedBlog
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Internal Servere error", [
+      error?.message,
+    ])
+  }
+}
+
 module.exports = {
   writeDraftBlog,
   completeBlog,
   publishBlog,
   giveComment,
   getRandomBlogs,
+  editBlog,
+  removeBlog,
+  deleteComment,
 }

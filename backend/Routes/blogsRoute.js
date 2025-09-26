@@ -17,8 +17,8 @@ router.patch("/completeblog", usermiddle, completeBlog)
 router.patch("/publishblog", usermiddle, publishBlog)
 router.post("/addcomment", usermiddle, giveComment)
 router.route("/getrandomblogs").get(getRandomBlogs)
-router.route("/editblog").patch(editBlog)
-router.route("/removeblog").delete(removeBlog)
-router.route("/deletecomment").delete(deleteComment)
+router.route("/editblog").patch(usermiddle, editBlog)
+router.route("/removeblog").delete(usermiddle, removeBlog)
+router.route("/deletecomment").delete(usermiddle, deleteComment)
 
 module.exports = router

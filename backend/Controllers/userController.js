@@ -259,6 +259,31 @@ const getSavedBlogs = async (req, res) => {
   }
 }
 
+const getAllUsers = async (req, res) => {
+  const adminid = req.adminid
+  if (!adminid) {
+    return sendResponse(res, 400, false, "You are no one to get this facility.")
+  }
+  try {
+    const all_users = await User.find(
+      {},
+      { _id: 1, first_name: 1, last_name: 1 }
+    )
+    return sendResponse(
+      res,
+      200,
+      true,
+      "User reterived successfully",
+      all_users
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Internal Servere Error", [
+      error?.message,
+    ])
+  }
+}
+
 module.exports = {
   userLogin,
   userSignup,
@@ -266,4 +291,5 @@ module.exports = {
   logout,
   saveBlog,
   getSavedBlogs,
+  getAllUsers,
 }

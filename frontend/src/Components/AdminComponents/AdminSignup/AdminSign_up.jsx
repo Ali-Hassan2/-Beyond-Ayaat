@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import axios from "axios";
 
 import "./AdminSignup.css";
@@ -14,6 +14,8 @@ function AdminSign_up() {
   }
 
 
+const token = localStorage.getItem("admintoken");
+const navigate=useNavigate();
 
   const [form, setForm] = useState({
     first_name: "",
@@ -58,7 +60,7 @@ function AdminSign_up() {
     try {
       const resp = await fetch("http://localhost:3004/admin/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" ,Authorization:`Bearer ${token}`,},
         body: JSON.stringify({
           first_name: form.first_name,
           last_name: form.last_name,
@@ -66,11 +68,17 @@ function AdminSign_up() {
           password: form.password,
         }),
       });
-      console.log("The response is: ", resp);
+      
       const data = await resp.json();
-      if (!resp.ok) throw new Error(data.message || "Signup failed");
-
+      if (!resp.ok) throw new Error(data.message || "Signup failed")
+    
       showToast("You have Successfuly Signup !", "success");
+      setSuccess("Admin created successfully!");
+        setTimeout(() => {
+          navigate("/admin/addadmin");
+        }, 2000);
+      
+
       setForm({
         first_name: "",
         last_name: "",

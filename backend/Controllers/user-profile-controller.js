@@ -70,4 +70,30 @@ const customizeProfile = async (req, res) => {
   }
 }
 
-module.exports = customizeProfile
+const getUserProfile = async (req, res) => {
+  const { id: user_id } = req.userid
+  if (!user_id) {
+    return sendResponse(res, 400, false, "You need to login.")
+  }
+
+  try {
+    const isUser = await User.findById(user_id)
+    if (!isUser) {
+      return sendResponse(res, 400, false, "No User found.")
+    }
+    const userProfileDetails = await userprofileSchema
+      .findOne({ user_id })
+      .populate("user_id", "first_name last_name")
+    const result = userProfileDetails.toObject()
+    if (result.socialMediaLinks instanceof Map) {
+      result.socialMediaLinks = Object.fromEntries(result.socialMediaLinks)
+    }
+
+    return sendResponse(res, 200, true, "User Profile Reterived", result)
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "There is an Error", [error?.message])
+  }
+}
+
+module.exports = { customizeProfile, getUserProfile }

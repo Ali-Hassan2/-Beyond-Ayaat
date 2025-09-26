@@ -12,7 +12,7 @@ const Admin_Manage = () => {
   const [showModal, setShowModal] = useState(false);
   const [adminName, setAdminName] = useState("");
   const [selectedAdmin, setSelectedAdmin] = useState(null);
-  const [success,setsucces]=useState("");
+  const [success, setsucces] = useState("");
 
   const gotoSignup = () => {
     navigate("/admin/adminsignup", { state: { fromDashboard: true } });
@@ -37,14 +37,11 @@ const Admin_Manage = () => {
     try {
       await delAdmins(selectedAdmin._id);
 
-      
       showToast("admin deleted successfully", "success");
-      
 
       setShowModal(false);
       setAdminName("");
 
-      
       setAdmins(admins.filter((a) => a._id !== selectedAdmin._id));
     } catch (err) {
       alert("Error deleting admin");
@@ -108,7 +105,6 @@ const Admin_Manage = () => {
         </div>
       </div>
 
-      
       {showModal && selectedAdmin && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded shadow-lg w-96">
@@ -145,8 +141,8 @@ const Admin_Manage = () => {
           </div>
         </div>
       )}
-        {success && <p className="success">{success}</p>}
-        <ToastContainer />
+      {success && <p className="success">{success}</p>}
+      <ToastContainer />
     </div>
   );
 };

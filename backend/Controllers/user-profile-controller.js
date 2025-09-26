@@ -45,23 +45,7 @@ const customizeProfile = async (req, res) => {
     })
 
     await newProfile.save()
-
-    const userProfileDetails = await userprofileSchema
-      .findOne({ user_id: id })
-      .populate("user_id", "first_name last_name")
-
-    const result = userProfileDetails.toObject()
-    if (result.socialMediaLinks instanceof Map) {
-      result.socialMediaLinks = Object.fromEntries(result.socialMediaLinks)
-    }
-
-    return sendResponse(
-      res,
-      200,
-      true,
-      "Profile established Successfully.",
-      result
-    )
+    return sendResponse(res, 200, true, "Profile established Successfully.")
   } catch (error) {
     console.log("There is an error", error)
     return sendResponse(res, 500, false, "Internal Server Error", [

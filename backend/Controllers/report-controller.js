@@ -127,7 +127,7 @@ const getallreportsbyme = async (req, res) => {
 }
 
 const getallreportsagainstme = async (req, res) => {
-  const user_id = req.userid?.id // ✅ sirf id extract ki
+  const user_id = req.userid?.id
   if (!user_id) {
     return sendResponse(res, 401, false, "Unauthorized Access.")
   }

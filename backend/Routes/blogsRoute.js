@@ -8,6 +8,7 @@ const {
   editBlog,
   removeBlog,
   deleteComment,
+  getsingleblog,
 } = require("../Controllers/blogsController")
 const usermiddle = require("../Middlewares/usermiddleware")
 const router = express.Router()
@@ -20,5 +21,6 @@ router.route("/getrandomblogs").get(getRandomBlogs)
 router.route("/editblog").patch(usermiddle, editBlog)
 router.route("/removeblog").delete(usermiddle, removeBlog)
 router.route("/deletecomment").delete(usermiddle, deleteComment)
+router.route("/getsingleblogbyid").get(getsingleblog)
 
 module.exports = router

@@ -455,6 +455,75 @@ const deleteComment = async (req, res) => {
   }
 }
 
+const getsingleblog = async (req, res) => {
+  const { blog_id } = req.query
+
+  if (!blog_id) {
+    return sendResponse(res, 400, false, "No Blog id provided")
+  }
+  try {
+    const isBlogExist = await blogsSchema
+      .findById(blog_id)
+      .populate("user_id", "first_name last_name")
+      .populate("topic_id", "title description")
+      .populate("subtopic_id", "title description")
+      .populate("comments.user_id", "first_name last_name")
+
+    if (!isBlogExist) {
+      return sendResponse(res, 400, false, "Sorry cannot find the blog.")
+    }
+    console.log("Kya horha hai ")
+    const formattedBlogData = {
+      _id: isBlogExist._id,
+      title: isBlogExist.title,
+      content: isBlogExist.content,
+      image: isBlogExist.image,
+      status: isBlogExist.status,
+      user: isBlogExist.user_id
+        ? {
+            _id: isBlogExist.user_id._id,
+            first_name: isBlogExist.user_id.first_name,
+            last_name: isBlogExist.user_id.last_name,
+          }
+        : null,
+      topic: isBlogExist.topic_id
+        ? {
+            _id: isBlogExist.topic_id._id,
+            title: isBlogExist.topic_id.title,
+            description: isBlogExist.topic_id.description,
+            subtopic: isBlogExist.subtopic_id
+              ? {
+                  _id: isBlogExist.subtopic_id._id,
+                  title: isBlogExist.subtopic_id.title,
+                  description: isBlogExist.subtopic_id.description,
+                }
+              : null,
+          }
+        : null,
+      comments:
+        isBlogExist.comments?.map((cmt) => ({
+          _id: cmt._id,
+          content: cmt.content,
+          createdAt: cmt.createdAt,
+          user: cmt.user_id
+            ? {
+                _id: cmt.user_id._id,
+                first_name: cmt.user_id.first_name,
+                last_name: cmt.user_id.last_name,
+              }
+            : null,
+        })) || [],
+    }
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Blog data reterived",
+      formattedBlogData
+    )
+  } catch (error) {}
+}
+
 module.exports = {
   writeDraftBlog,
   completeBlog,
@@ -464,4 +533,5 @@ module.exports = {
   editBlog,
   removeBlog,
   deleteComment,
+  getsingleblog,
 }

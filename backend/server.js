@@ -13,6 +13,7 @@ const topicRouter = require("./Routes/topicRoute")
 const subtopicRouter = require("./Routes/subtopics")
 const blogRouter = require("./Routes/blogsRoute")
 const userProfileRouter = require("./Routes/user-profile")
+const reportsRouter = require("./Routes/reportRoute")
 const app = express()
 dotenv.config()
 
@@ -46,6 +47,7 @@ app.use("/topics", topicRouter)
 app.use("/subtopic", subtopicRouter)
 app.use("/blogs", blogRouter)
 app.use("/userprofile/ba", userProfileRouter)
+app.use("/reports/rc", reportsRouter)
 
 // server setup
 app.get("/", (req, res) => {
@@ -63,7 +65,9 @@ const startServer = () => {
     try {
       connectDB()
       server = app.listen(port, () => {
-        console.log(colors.bgGreen(`Server is running at the pppppppppppport: ${port}`))
+        console.log(
+          colors.bgGreen(`Server is running at the pppppppppppport: ${port}`)
+        )
       })
       resolve(server)
     } catch (error) {

@@ -28,6 +28,13 @@ const userSchema = new mongoose.model(
           default: [],
         },
       ],
+      reports: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "reportSchema",
+          default: [],
+        },
+      ],
     },
     { timestamps: true }
   )

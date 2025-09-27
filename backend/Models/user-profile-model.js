@@ -5,6 +5,7 @@ const {
   USERSTATUS,
   ATRISKUSERS,
 } = require("../constants/constants")
+const { reportSchema } = require("./report-model")
 const userprofileSchema = new mongoose.model(
   "userprofileSchema",
   mongoose.Schema(

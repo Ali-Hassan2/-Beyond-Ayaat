@@ -2,6 +2,7 @@ const { userprofileSchema } = require("../Models/user-profile-model")
 const sendResponse = require("../Utils/send-response")
 const userProfileValidation = require("../Validations/user-profile.schema")
 const User = require("../Models/user-model")
+
 const customizeProfile = async (req, res) => {
   const parseResult = userProfileValidation.safeParse(req.body)
   if (!parseResult.success) {

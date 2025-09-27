@@ -31,4 +31,24 @@ const ATRISKUSERS = Object.freeze({
   DANGER: "danger",
 })
 
-module.exports = { PROFESSIONS, SOCIALLINKS, USERSTATUS, ATRISKUSERS }
+const REPORTINGREASONS = Object.freeze({
+  INAPPROPRIATE_LANGUAGE: "Foul or disrespectful language",
+  HATE_SPEECH: "Hate or sectarian speech",
+  BLASPHEMY: "Disrespect to Allah, Prophets, or Qur’an",
+  HARASSMENT: "Bullying or mocking others",
+  INAPPROPRIATE_CONTENT: "Indecent or immoral content",
+  MISINFORMATION: "False Islamic information",
+  PROMOTING_HARAM: "Promoting haram activities",
+  SPAM: "Spam or unwanted ads",
+  EXTREMISM: "Violent or extremist content",
+  PRIVACY_VIOLATION: "Sharing private information",
+  OTHER: "Other",
+})
+
+module.exports = {
+  PROFESSIONS,
+  SOCIALLINKS,
+  USERSTATUS,
+  ATRISKUSERS,
+  REPORTINGREASONS,
+}

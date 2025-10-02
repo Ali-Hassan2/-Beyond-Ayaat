@@ -26,17 +26,17 @@ const roomSchema = new mongoose.model(
         required: true,
       },
       isPublic: {
-        type: boolean,
+        type: Boolean,
         default: true,
       },
-      request: [
+      requests: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "user",
           default: [],
         },
       ],
-      memeber: [
+      member: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "user",

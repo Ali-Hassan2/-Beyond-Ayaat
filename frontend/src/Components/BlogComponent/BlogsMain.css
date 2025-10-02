@@ -1,0 +1,114 @@
+.blogs-page {
+  background: linear-gradient(to bottom, #0b132b, #1c2541);
+  min-height: 100vh;
+  padding: 2rem;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Banner */
+.banner {
+  background: #1d2a4a;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+}
+.banner h1 {
+  font-size: 2.5rem;
+  color: #00c9a7;
+  font-weight: 700;
+}
+
+/* Top Actions */
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.write-btn {
+  background: #00c9a7;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+.write-btn:hover {
+  background: #00a78e;
+}
+
+/* Profile Section */
+.profile-section {
+  position: relative;
+}
+.profile-btn {
+  background: #1d2a4a;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  background: #1d2a4a;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+.dropdown-menu button {
+  padding: 0.8rem 1.2rem;
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.dropdown-menu button:hover {
+  background: #00c9a7;
+}
+
+/* Blogs Section */
+.blogs-container {
+  margin-top: 2rem;
+}
+.blogs-heading {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #00c9a7;
+}
+
+.blogs-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.blog-card {
+  background: #1d2a4a;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #a8b2d1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.blog-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+}

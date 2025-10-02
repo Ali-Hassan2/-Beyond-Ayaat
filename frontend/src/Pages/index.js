@@ -5,3 +5,4 @@ export { AdminDashboard } from "./Admin/AdminDashboard";
 export { AdminSignup } from "./Admin/AdminSignup";
 export { AdminSignin } from "./Admin/AdminSignin";
 export { AdminManage } from "./Admin/AdminManage";
+export { BlogsAll } from "./Blogs/BlogsAll";

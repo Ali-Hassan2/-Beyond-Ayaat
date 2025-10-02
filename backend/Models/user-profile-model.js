@@ -10,10 +10,6 @@ const userprofileSchema = new mongoose.model(
   "userprofileSchema",
   mongoose.Schema(
     {
-      user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-      },
       bio: {
         type: String,
         required: false,

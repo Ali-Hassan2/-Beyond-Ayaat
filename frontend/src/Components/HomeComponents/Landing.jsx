@@ -8,6 +8,7 @@ import { GiHumanPyramid } from "react-icons/gi";
 import { useTopics } from "../../Hooks/useTopics";
 import { Link } from "react-router-dom";
 
+import { BrowserRouter } from "react-router-dom";
 
 // const box_Data = [
 //   {
@@ -68,9 +69,9 @@ function Landing({ props }) {
       <div className="buttons h-auto w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-[50px] mt-[50px] px-4 overflow-hidden">
         <button
           className="w-full sm:w-[200px] h-[50px] text-[16px] sm:text-[20px] rounded-md text-white cursor-pointer"
-          style={{ backgroundColor: "#48AFB6" }}
+          
         >
-         <Link> Start Exploring</Link>  
+         <Link to='/blogs'> Start Exploring</Link>  
         </button>
         <button className="w-full sm:w-[250px] h-[50px] text-[16px] sm:text-[20px] rounded-md border border-white/30 text-white cursor-pointer">
           <Link> Read About the Vision</Link>

@@ -81,4 +81,78 @@ const getUserProfile = async (req, res) => {
   }
 }
 
-module.exports = { customizeProfile, getUserProfile }
+const updateTheProfile = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { id: user_id } = req.userid
+    if (!id) {
+      return sendResponse(res, 400, false, "Please provide the profile ID.")
+    }
+    if (!user_id) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "Only a logged-in user can do this operation."
+      )
+    }
+    const {
+      bio,
+      location,
+      contactNumber,
+      status,
+      profession,
+      education,
+      socialMediaLinks,
+    } = req.body
+    const existingProfile = await userprofileSchema.findById(id)
+    if (!existingProfile) {
+      return sendResponse(res, 404, false, "User profile not found.")
+    }
+    const isSameData =
+      existingProfile.bio === bio &&
+      existingProfile.location === location &&
+      existingProfile.contactNumber === contactNumber &&
+      existingProfile.education === education &&
+      existingProfile.profession === profession &&
+      existingProfile.status === status &&
+      JSON.stringify(existingProfile.socialMediaLinks) ===
+        JSON.stringify(socialMediaLinks)
+    if (isSameData) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "No changes detected. Please update something."
+      )
+    }
+    const payload = {
+      bio,
+      location,
+      contactNumber,
+      education,
+      profession,
+      status,
+      socialMediaLinks,
+    }
+    const updatedProfile = await userprofileSchema.findByIdAndUpdate(
+      id,
+      payload,
+      { new: true }
+    )
+    return sendResponse(
+      res,
+      200,
+      true,
+      "User profile updated successfully.",
+      updatedProfile
+    )
+  } catch (error) {
+    console.error("There is an error", error)
+    return sendResponse(res, 500, false, "Internal Server Error", [
+      error.message,
+    ])
+  }
+}
+
+module.exports = { customizeProfile, getUserProfile, updateTheProfile }

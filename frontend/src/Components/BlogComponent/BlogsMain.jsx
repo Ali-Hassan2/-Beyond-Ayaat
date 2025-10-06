@@ -6,8 +6,6 @@ function BlogsMain() {
   const { blogs, loading, error } = useBlogs();
   const [showMenu, setShowMenu] = useState(false);
   const [showForm, setShowForm] = useState(false);
-
-  
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -15,14 +13,11 @@ function BlogsMain() {
     subtopic_id: "",
     image: "",
   });
-
   const blogList = blogs || [];
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("New Blog Submitted:", formData);
@@ -35,19 +30,14 @@ function BlogsMain() {
       image: "",
     });
   };
-
   if (loading) return <p className="loading">Loading blogs...</p>;
   if (error) return <p className="error">Error fetching blogs!</p>;
   if (!blogList.length) return <p className="no-blogs">No blogs found.</p>;
-
   return (
     <div className="blogs-page">
-      
       <div className="banner">
         <h1>Beyond Ayaat</h1>
-      </div>
-
-      
+      </div>      
       <div className="top-actions">
         <button className="write-btn" onClick={() => setShowForm(true)}>
            Write Your Blog
@@ -60,7 +50,6 @@ function BlogsMain() {
           >
             Hi, User
           </button>
-
           {showMenu && (
             <div className="dropdown-menu">
               <button>My Blogs</button>
@@ -68,12 +57,9 @@ function BlogsMain() {
             </div>
           )}
         </div>
-      </div>
-
-     
+      </div>     
       <div className="blogs-container">
         <h2 className="blogs-heading">All Blogs</h2>
-
         <div className="blogs-list">
           {blogList.map((blog) => (
             <div className="blog-card" key={blog._id}>
@@ -82,7 +68,6 @@ function BlogsMain() {
                 alt={blog.title}
                 className="blog-image"
               />
-
               <div className="blog-content">
                 <h3 className="blog-title">{blog.title}</h3>
                 <p className="blog-text">{blog.content.slice(0, 100)}</p>
@@ -91,7 +76,6 @@ function BlogsMain() {
                   <p className="blog-topic">
                     {blog.topic.title} {blog.topic.description}
                   </p>
-
                   <p className="blog-author">
                     By {blog.user.first_name} <br /> {blog.user.last_name}
                   </p>
@@ -110,8 +94,6 @@ function BlogsMain() {
           ))}
         </div>
       </div>
-
-     
       {showForm && (
         <div className="modal-overlay">
           <div className="modal">
@@ -155,7 +137,6 @@ function BlogsMain() {
                 value={formData.image}
                 onChange={handleChange}
               />
-
               <div className="modal-actions">
                 <button type="submit" className="save-btn">
                    Submit

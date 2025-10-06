@@ -1,11 +1,10 @@
-import React from 'react'
-import { BlogsMain } from '../../Components/BlogComponent/BlogsMain';
+import React from "react"
+import { BlogsMain } from "../../Components/BlogComponent/BlogsMain"
 
-function BlogsAll () {
+function BlogsAll() {
   return (
     <div>
-        <BlogsMain />
-
+      <BlogsMain />
     </div>
   )
 }

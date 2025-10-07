@@ -141,8 +141,6 @@ const completeBlog = async (req, res) => {
   }
   try {
     const { blog_id } = req.query
-    const { title, content, topic_id, subtopic_id, createdAt, status } =
-      req.body
     const image = req.files.image
     if (!req.files || Object.keys(req.files).length === 0) {
       return sendResponse(res, 400, false, "Sorry no images found")

@@ -20,7 +20,11 @@ const checkOwner = async (req, res, next) => {
     next()
   } catch (error) {
     console.log("There is an error", error)
-    return sendResponse(res, 500, false, "Server Error", [error?.message])
+    return sendResponse(res, 500, false, "Server Error", {
+      message: error?.message,
+      name: error.name,
+      stack: error.stack,
+    })
   }
 }
 

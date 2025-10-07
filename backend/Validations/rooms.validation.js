@@ -9,6 +9,8 @@ const imageValidation = z.object({
 const ownerValidation = z.string().min(1, { message: "User is required." })
 const isPublicValidation = z.boolean().default(true)
 const requestValidation = z.array(z.string()).default([])
+const subtopicIdValidation = z.string().nullable().default(null)
+const topicIdValidation = z.string().nullable().default(null)
 const memberValidation = z.array(z.string()).default([])
 
 const roomsValidation = z.object({
@@ -19,6 +21,8 @@ const roomsValidation = z.object({
   isPublic: isPublicValidation,
   requests: requestValidation,
   member: memberValidation,
+  subtopicId: subtopicIdValidation,
+  topicId: topicIdValidation,
 })
 
 export { roomsValidation }

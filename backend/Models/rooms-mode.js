@@ -12,6 +12,16 @@ const roomSchema = new mongoose.model(
         type: String,
         required: true,
       },
+      topicId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "topic",
+        default: null,
+      },
+      subtopicId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "subtopics",
+        default: null,
+      },
       avatar: {
         public_id: {
           type: String,

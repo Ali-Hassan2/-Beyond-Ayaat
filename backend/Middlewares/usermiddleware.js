@@ -16,7 +16,7 @@ const usermiddle = async (req, res, next) => {
   const token = authHeader.split(" ")[1]
   try {
     const decoded = jwt.verify(token, process.env.JWT_PASSWORD)
-    req.userid = decoded // attach decoded payload
+    req.userid = decoded
     next()
   } catch (error) {
     return sendResponse(res, 401, false, "unauthorized", {

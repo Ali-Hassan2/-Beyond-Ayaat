@@ -14,6 +14,8 @@ const subtopicRouter = require("./Routes/subtopics")
 const blogRouter = require("./Routes/blogsRoute")
 const userProfileRouter = require("./Routes/user-profile")
 const reportsRouter = require("./Routes/reportRoute")
+const roomsRouter = require("./Routes/roomRoute")
+
 const app = express()
 dotenv.config()
 
@@ -48,6 +50,7 @@ app.use("/subtopic", subtopicRouter)
 app.use("/blogs", blogRouter)
 app.use("/userprofile/ba", userProfileRouter)
 app.use("/reports/rc", reportsRouter)
+app.use("/rooms/mdmr", roomsRouter)
 
 // server setup
 app.get("/", (req, res) => {

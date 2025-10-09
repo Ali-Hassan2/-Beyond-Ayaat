@@ -15,6 +15,14 @@ const messagesSchema = mongoose.model(
       type: String,
       trim: true,
     },
+    image: {
+      public_id: {
+        type: String,
+      },
+      url: {
+        type: String,
+      },
+    },
   })
 )
 module.exports = messagesSchema

@@ -53,6 +53,18 @@ const roomSchema = new mongoose.model(
           default: [],
         },
       ],
+      messages: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "messageSchema",
+          default: [],
+        },
+      ],
+      room_rules: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "roomrules",
+        default: null,
+      },
     },
     { timestamps: true }
   )

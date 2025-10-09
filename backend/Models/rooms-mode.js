@@ -62,7 +62,7 @@ const roomSchema = new mongoose.model(
       ],
       room_rules: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "roomrules",
+        ref: "roomrulesSchema",
         default: null,
       },
     },

@@ -142,23 +142,54 @@ const addRoomRules = async (req, res) => {
 }
 
 const deleteRoomRules = async (req, res) => {
-  try {
-    const room_id = req.params.id
-    if (!room_id) {
-      return sendResponse(res, 400, false, "Please provide roomId")
-    }
-    const isRoom = await roomSchema.findByIdAndDelete(room_id)
-    if (!isRoom) {
-      return sendResponse(res, 400, false, "No Room Founded Sorry.")
-    }
-    return sendResponse(res, 200, true, "Room deleted successfully")
-  } catch (error) {
-    console.log("There is an error", error)
-    return sendResponse(res, 500, false, "Server Error", [error?.message])
-  }
+  // TODO: remove the rules not room
+  // try {
+  //   const room_id = req.params.id
+  //   if (!room_id) {
+  //     return sendResponse(res, 400, false, "Please provide roomId")
+  //   }
+  //   const isRoom = await roomSchema.findByIdAndDelete(room_id)
+  //   if (!isRoom) {
+  //     return sendResponse(res, 400, false, "No Room Founded Sorry.")
+  //   }
+  //   return sendResponse(res, 200, true, "Room deleted successfully")
+  // } catch (error) {
+  //   console.log("There is an error", error)
+  //   return sendResponse(res, 500, false, "Server Error", [error?.message])
+  // }
 }
 
-const allRooms = async (req, res) => {}
+const upgradeRoomRules = async (req, res) => {}
+
+const allRooms = async (req, res) => {
+  try {
+    let { limit } = req.query
+
+    limit = Number(limit)
+    if (isNaN(limit) || limit <= 0) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Please provide a valid limit (number > 0)."
+      )
+    }
+
+    const rooms = await roomSchema
+      .find({})
+      .populate("owner", "first_name last_name")
+      .populate("requests", "username email")
+      .populate("member", "first_name last_name")
+      .populate("room_rules", "rules")
+      .populate("topicId", "title description")
+      .populate("subtopicId", "title description")
+      .limit(limit)
+    return sendResponse(res, 200, true, "Rooms retrieved successfully.", rooms)
+  } catch (error) {
+    console.error("Error retrieving rooms:", error)
+    return sendResponse(res, 500, false, "Server Error", [error.message])
+  }
+}
 
 const changeaccessmode = async (req, res) => {}
 
@@ -182,4 +213,5 @@ module.exports = {
   changeaccessmode,
   addRoomRules,
   deleteRoomRules,
+  upgradeRoomRules,
 }

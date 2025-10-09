@@ -1,3 +1,4 @@
+const { roomSchema } = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 const roomsValidation = require("../Validations/rooms.validation")
 
@@ -25,13 +26,53 @@ const createNewRoom = async (req, res) => {
     console.log("The topic and subtopic id is:", { topicId, subtopicId })
     const data = parseResult.data
     console.log("The data we found is:", data)
-    res.send("Hello")
-  } catch (error) {}
+
+    const payload = {
+      title: data.title,
+      description: data.description,
+      topicId,
+      subtopicId,
+      avatar: data.avatar,
+      owner,
+      isPublic: data.isPublic,
+      requests: data.requests,
+    }
+    const newRoom = new roomSchema(payload)
+    await newRoom.save()
+
+    return sendResponse(res, 200, true, "Room Created Successfully.", newRoom)
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
 }
 
-const getOwnerRooms = async (req, res) => {}
+const joinPublicroom = async (req, res) => {}
+
+const getOwnerRooms = async (req, res) => {
+  const { id: userId } = req.userid
+  if (!userId) {
+    return sendResponse(res, 400, false, "No owner found.")
+  }
+  console.log("The user id is:", userId)
+  try {
+    const rooms = await roomSchema
+      .find({ owner: userId })
+      .populate("topicId")
+      .populate("subtopicId")
+      .populate("member")
+      .populate("requests")
+      .sort({ "topicId.title": 1, "subtopicId.title": 1 })
+    return sendResponse(res, 200, true, "Owner roomos fetched.", rooms)
+  } catch (error) {
+    console.log("The error is:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
 
 const allRooms = async (req, res) => {}
+
+const changeaccessmode = async (req, res) => {}
 
 const updateRoomInfo = async (req, res) => {}
 
@@ -49,4 +90,6 @@ module.exports = {
   deleteRoom,
   acceptRequest,
   rejectRequest,
+  joinPublicroom,
+  changeaccessmode,
 }

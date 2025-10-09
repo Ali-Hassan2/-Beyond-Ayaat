@@ -47,7 +47,41 @@ const createNewRoom = async (req, res) => {
   }
 }
 
-const joinPublicroom = async (req, res) => {}
+const joinPublicroom = async (req, res) => {
+  const { id: userId } = req.userid
+  if (!userId) {
+    return sendResponse(res, 400, false, "Only authenticated users can join.")
+  }
+
+  try {
+    const { room_id } = req.query
+    if (!room_id) {
+      return sendResponse(res, 400, false, "Please provide roomId.")
+    }
+    const room = await roomSchema.findById(room_id)
+    if (!room) {
+      return sendResponse(res, 400, false, "No room found.")
+    }
+    if (!room.isPublic) {
+      return sendResponse(res, 400, false, "Sorry, this room is private.")
+    }
+    const isAlreadyMember = room.member.includes(userId)
+    if (!isAlreadyMember) {
+      room.member.push(userId)
+      await room.save()
+      return sendResponse(res, 200, true, "Room joined successfully.")
+    }
+    return sendResponse(
+      res,
+      400,
+      false,
+      "You are already a member of this room."
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server error.", [error?.message])
+  }
+}
 
 const getOwnerRooms = async (req, res) => {
   const { id: userId } = req.userid

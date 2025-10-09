@@ -10,6 +10,8 @@ const {
   rejectRequest,
   joinPublicroom,
   changeaccessmode,
+  addRoomRules,
+  deleteRoomRules,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -18,6 +20,10 @@ router.route("/createnewroom").post(usermiddle, createNewRoom)
 router.route("/joinroompublic").post(usermiddle, joinPublicroom)
 router.route("/getyourrooms").get(usermiddle, getOwnerRooms)
 router.route("/getallrooms").get(allRooms)
+router
+  .route("/addroomrules/descriptions/:id")
+  .post(usermiddle, checkOwner, addRoomRules)
+router.route("/deleteroomrules").delete(usermiddle, checkOwner, deleteRoomRules)
 router.route("/changeaccessmode").put(checkOwner, usermiddle, changeaccessmode)
 router.route("/upgraderoominfo").get(checkOwner, usermiddle, updateRoomInfo)
 router.route("/deleteroom").delete(checkOwner, usermiddle, deleteRoom)

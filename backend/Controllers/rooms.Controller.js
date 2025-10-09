@@ -1,4 +1,5 @@
 const { roomSchema } = require("../Models/rooms-mode")
+const roomruleSchema = require("../Models/rooms-rules")
 const sendResponse = require("../Utils/send-response")
 const roomsValidation = require("../Validations/rooms.validation")
 
@@ -96,12 +97,54 @@ const getOwnerRooms = async (req, res) => {
       .populate("subtopicId")
       .populate("member")
       .populate("requests")
+      .populate("owner")
+      .populate("room_rules")
       .sort({ "topicId.title": 1, "subtopicId.title": 1 })
     return sendResponse(res, 200, true, "Owner roomos fetched.", rooms)
   } catch (error) {
     console.log("The error is:", error)
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
+}
+
+const addRoomRules = async (req, res) => {
+  const parseResult = roomsValidation
+    .pick({ room_rules: true })
+    .safeParse(req.body)
+  if (!parseResult.success) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate the rules.",
+      parseResult.error.issues.map((err) => err?.message)
+    )
+  }
+  try {
+    const room_id = req.params.id
+    console.log("The room idddddis:", room_id)
+    if (!room_id) {
+      return sendResponse(res, 400, false, "Please provide a roomId.")
+    }
+    const room = await roomSchema.findById(room_id)
+    if (!room) {
+      return sendResponse(res, 404, false, "Room not found.")
+    }
+    const { room_rules } = parseResult.data
+    const newRules = await roomruleSchema.create({ rules: room_rules })
+    room.room_rules = newRules._id
+    await room.save()
+    return sendResponse(res, 200, true, "Room rules added successfully.", room)
+  } catch (error) {
+    console.error("Error adding room rules:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const deleteRoomRules = async (req, res) => {
+  try {
+    c
+  } catch (error) {}
 }
 
 const allRooms = async (req, res) => {}
@@ -126,4 +169,6 @@ module.exports = {
   rejectRequest,
   joinPublicroom,
   changeaccessmode,
+  addRoomRules,
+  deleteRoomRules,
 }

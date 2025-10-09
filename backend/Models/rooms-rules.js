@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
-const roomrules = mongoose.model(
-  "roomrules",
+const roomruleSchema = mongoose.model(
+  "roomrulesSchema",
   new mongoose.Schema(
     {
       rules: {
@@ -13,4 +13,4 @@ const roomrules = mongoose.model(
   )
 )
 
-module.exports = roomrules
+module.exports = roomruleSchema

@@ -143,8 +143,19 @@ const addRoomRules = async (req, res) => {
 
 const deleteRoomRules = async (req, res) => {
   try {
-    c
-  } catch (error) {}
+    const room_id = req.params.id
+    if (!room_id) {
+      return sendResponse(res, 400, false, "Please provide roomId")
+    }
+    const isRoom = await roomSchema.findByIdAndDelete(room_id)
+    if (!isRoom) {
+      return sendResponse(res, 400, false, "No Room Founded Sorry.")
+    }
+    return sendResponse(res, 200, true, "Room deleted successfully")
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
 }
 
 const allRooms = async (req, res) => {}

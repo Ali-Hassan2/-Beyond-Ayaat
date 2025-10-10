@@ -265,14 +265,11 @@ const changeaccessmode = async (req, res) => {
   try {
     const room_id = req.params.id || req.params.roomId
     const { id: user_id } = req.userid
-
     if (!user_id) {
       return sendResponse(res, 400, false, "Please login first")
     }
-
     const { isPublic } = parseResult.data
     const isRoomExist = await roomSchema.findById(room_id)
-
     if (!isRoomExist) {
       return sendResponse(res, 400, false, "Sorry no room found")
     }
@@ -281,7 +278,6 @@ const changeaccessmode = async (req, res) => {
     }
     isRoomExist.isPublic = isPublic
     await isRoomExist.save()
-
     return sendResponse(
       res,
       200,
@@ -296,14 +292,10 @@ const changeaccessmode = async (req, res) => {
 }
 
 const pinMessage = async (req, res) => {}
-
 const unpinmessage = async (req, res) => {}
 const updateRoomInfo = async (req, res) => {}
-
 const deleteRoom = async (req, res) => {}
-
 const acceptRequest = async (req, res) => {}
-
 const rejectRequest = async (req, res) => {}
 
 module.exports = {

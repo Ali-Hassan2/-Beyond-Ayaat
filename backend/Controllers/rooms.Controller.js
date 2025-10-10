@@ -256,7 +256,19 @@ const allRooms = async (req, res) => {
         },
       })
       .limit(limit)
-    return sendResponse(res, 200, true, "Rooms retrieved successfully.", rooms)
+      .lean()
+
+    const roomWithMemberCount = rooms.map((room) => ({
+      ...room,
+      memberCount: room.member ? room.member.length : 0,
+    }))
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Rooms retrieved successfully.",
+      roomWithMemberCount
+    )
   } catch (error) {
     console.error("Error retrieving rooms:", error)
     return sendResponse(res, 500, false, "Server Error", [error.message])
@@ -657,7 +669,6 @@ const acceptRequest = async (req, res) => {
 }
 
 const rejectRequest = async (req, res) => {}
-
 module.exports = {
   createNewRoom,
   getOwnerRooms,

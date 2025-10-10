@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { REQUEST_STATUS } = require("../constants/constants")
 
 const roomSchema = new mongoose.Schema(
   {
@@ -25,8 +26,21 @@ const roomSchema = new mongoose.Schema(
     },
     isPublic: { type: Boolean, default: true },
     requests: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "user", default: [] },
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: Object.values(REQUEST_STATUS),
+          default: REQUEST_STATUS.PENDING,
+        },
+        _id: false,
+      },
     ],
+
     member: [
       { type: mongoose.Schema.Types.ObjectId, ref: "user", default: [] },
     ],

@@ -15,6 +15,8 @@ const {
   upgradeRoomRules,
   pinMessage,
   unpinmessage,
+  makerequest,
+  getAllrequestsWithStatus,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -39,6 +41,10 @@ router
   .patch(usermiddle, checkOwner, changeaccessmode)
 router.route("/upgraderoominfo/:id").put(usermiddle, checkOwner, updateRoomInfo)
 router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
+router.route("/:roomId/createrequest").post(usermiddle, makerequest)
+router
+  .route("/getallyourrequestswithstatus")
+  .get(usermiddle, getAllrequestsWithStatus)
 router
   .route("/acceptuserroomrequest")
   .post(checkOwner, usermiddle, acceptRequest)

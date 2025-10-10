@@ -1,3 +1,4 @@
+const { REQUEST_STATUS } = require("../constants/constants")
 const roomSchema = require("../Models/rooms-mode")
 const roomruleSchema = require("../Models/rooms-rules")
 const sendResponse = require("../Utils/send-response")
@@ -507,6 +508,56 @@ const unpinmessage = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
+const makerequest = async (req, res) => {
+  const room_id = req.params.roomId
+  const { id: user_id } = req.userid
+
+  try {
+    if (!user_id) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    if (!room_id) {
+      return sendResponse(res, 400, false, "Please provide room id.")
+    }
+    const isRoomExist = await roomSchema.findById(room_id)
+    if (!isRoomExist) {
+      return sendResponse(res, 400, false, "Room not found.")
+    }
+    if (isRoomExist.isPublic) {
+      return sendResponse(res, 400, false, "Room is not private.")
+    }
+    const isAlreadyMember = isRoomExist.member.includes(user_id)
+    const isAlreadyRequested = isRoomExist.requests.some(
+      (r) => r.user.toString() === user_id.toString()
+    )
+    if (isAlreadyMember) {
+      return sendResponse(res, 400, false, "You are already a member.")
+    }
+    if (isAlreadyRequested) {
+      return sendResponse(res, 400, false, "Request already sent.")
+    }
+    isRoomExist.requests.push({
+      user: user_id,
+      status: REQUEST_STATUS.PENDING,
+    })
+    await isRoomExist.save()
+    await isRoomExist.populate("requests.user", "first_name last_name")
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Request sent successfully.",
+      isRoomExist.requests
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const getAllrequestsWithStatus = async (req, res) => {
+  res.send("Hello")
+}
 
 const acceptRequest = async (req, res) => {}
 const rejectRequest = async (req, res) => {}
@@ -526,4 +577,6 @@ module.exports = {
   upgradeRoomRules,
   pinMessage,
   unpinmessage,
+  makerequest,
+  getAllrequestsWithStatus,
 }

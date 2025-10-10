@@ -1,4 +1,4 @@
-const z = require("zod");
+const z = require("zod")
 
 const subtopicvalidation = z.object({
   title: z.string().min(1, { message: "title is required." }),
@@ -11,5 +11,5 @@ const subtopicvalidation = z.object({
     })
     .optional(),
   summary: z.string().min(1, { message: "Summary is required." }),
-});
-module.exports = subtopicvalidation;
+})
+module.exports = subtopicvalidation

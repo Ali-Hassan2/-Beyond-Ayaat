@@ -204,7 +204,6 @@ const upgradeRoomRules = async (req, res) => {
       },
       { new: true }
     )
-
     return sendResponse(
       res,
       200,
@@ -290,11 +289,100 @@ const changeaccessmode = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
+const updateRoomInfo = async (req, res) => {
+  const parseResult = roomsValidation
+    .partial()
+    .pick({
+      title: true,
+      topicId: true,
+      subtopicId: true,
+      description: true,
+      avatar: true,
+    })
+    .safeParse(req.body)
 
+  if (!parseResult.success) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate the body",
+      parseResult.error.issues.map((err) => err?.message)
+    )
+  }
+  const { id: user_id } = req.userid
+  const room_id = req.params.id || req.params.roomId
+  try {
+    if (!user_id) {
+      return sendResponse(res, 400, false, "Please login first", null)
+    }
+    const data = parseResult.data
+    const isRoomExist = await roomSchema.findById(room_id)
+    if (!isRoomExist) {
+      return sendResponse(res, 400, false, "Sorry, no room found.")
+    }
+    const isDataSame =
+      isRoomExist.title === data.title &&
+      isRoomExist.description === data.description &&
+      isRoomExist.topicId?.toString() === data.topicId &&
+      isRoomExist.subtopicId?.toString() === data.subtopicId &&
+      isRoomExist.avatar === data.avatar
+    if (isDataSame) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Please change something before updating."
+      )
+    }
+    if (data.title) isRoomExist.title = data.title
+    if (data.description) isRoomExist.description = data.description
+    if (data.topicId) isRoomExist.topicId = data.topicId
+    if (data.subtopicId) isRoomExist.subtopicId = data.subtopicId
+    if (data.avatar) isRoomExist.avatar = data.avatar
+    await isRoomExist.save()
+    await isRoomExist.populate([
+      {
+        path: "topicId",
+        select: "title description",
+      },
+      {
+        path: "subtopicId",
+        select: "title description",
+      },
+    ])
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Room data updated successfully.",
+      isRoomExist
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const deleteRoom = async (req, res) => {
+  const room_id = req.params.id || req.params.roomId
+  const { id: user_id } = req.userid
+  try {
+    if (!user_id) {
+      return sendResponse(res, 400, false, "Please login first", null)
+    }
+    const isRoomExist = await roomSchema.findByIdAndDelete(room_id)
+    if (!isRoomExist) {
+      return sendRespons(res, 400, false, "No room found.", null)
+    }
+    return sendResponse(res, 200, true, "Room Deleted Successfully")
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
 const pinMessage = async (req, res) => {}
 const unpinmessage = async (req, res) => {}
-const updateRoomInfo = async (req, res) => {}
-const deleteRoom = async (req, res) => {}
 const acceptRequest = async (req, res) => {}
 const rejectRequest = async (req, res) => {}
 

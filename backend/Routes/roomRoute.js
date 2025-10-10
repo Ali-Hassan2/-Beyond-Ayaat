@@ -37,8 +37,8 @@ router.route("/:roomId/unpinmessage/:messagId").post(usermiddle, unpinmessage)
 router
   .route("/changeaccessmode/:id")
   .patch(usermiddle, checkOwner, changeaccessmode)
-router.route("/upgraderoominfo").get(checkOwner, usermiddle, updateRoomInfo)
-router.route("/deleteroom").delete(checkOwner, usermiddle, deleteRoom)
+router.route("/upgraderoominfo/:id").put(usermiddle, checkOwner, updateRoomInfo)
+router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
 router
   .route("/acceptuserroomrequest")
   .post(checkOwner, usermiddle, acceptRequest)

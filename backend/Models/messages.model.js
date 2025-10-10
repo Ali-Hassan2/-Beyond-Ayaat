@@ -1,51 +1,29 @@
 const mongoose = require("mongoose")
 
-const messagesSchema = mongoose.model(
-  "messagesSchema",
-  mongoose.Schema(
-    {
-      sender_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-      },
-      room_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "roomSchema",
-      },
-      content: {
-        type: String,
-        trim: true,
-      },
-      image: {
-        public_id: {
-          type: String,
-        },
-        url: {
-          type: String,
-        },
-      },
-      reactions: [
-        {
-          reacter: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user",
-          },
-          emoji: String,
-        },
-      ],
-      replies: [
-        {
-          replier: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user",
-          },
-          content: {
-            type: String,
-          },
-        },
-      ],
+const messageSchema = new mongoose.Schema(
+  {
+    sender_id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    room_id: { type: mongoose.Schema.Types.ObjectId, ref: "roomSchema" },
+    content: { type: String, trim: true },
+    image: {
+      public_id: String,
+      url: String,
     },
-    { timestamps: true }
-  )
+    reactions: [
+      {
+        reacter: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        emoji: String,
+      },
+    ],
+    replies: [
+      {
+        replier: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        content: String,
+      },
+    ],
+  },
+  { timestamps: true }
 )
-module.exports = messagesSchema
+
+const Message = mongoose.model("messagesSchema", messageSchema)
+module.exports = Message

@@ -33,7 +33,7 @@ router
   .route("/upgraderoomrules/:id")
   .patch(usermiddle, checkOwner, upgradeRoomRules)
 router.route("/:roomId/pinmessage/:messageId").post(usermiddle, pinMessage)
-router.route("/:roomId/unpinmessage/:messagId").post(usermiddle, unpinmessage)
+router.route("/:roomId/unpinmessage/:messageId").post(usermiddle, unpinmessage)
 router
   .route("/changeaccessmode/:id")
   .patch(usermiddle, checkOwner, changeaccessmode)
@@ -42,6 +42,6 @@ router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
 router
   .route("/acceptuserroomrequest")
   .post(checkOwner, usermiddle, acceptRequest)
-router.route("rejectrequest").post(checkOwner, usermiddle, rejectRequest)
+router.route("/rejectrequest").post(checkOwner, usermiddle, rejectRequest)
 
 module.exports = router

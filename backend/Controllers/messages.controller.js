@@ -1,5 +1,5 @@
 const messagesSchema = require("../Models/messages.model")
-const { roomSchema } = require("../Models/rooms-mode")
+const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 const messagesValidation = require("../Validations/messages.validation")
 const cloudinary = require("cloudinary").v2
@@ -148,38 +148,39 @@ const deleteMessage = async (req, res) => {
   try {
     const room_id = req.params.roomId
     const { id: user_id } = req.userid
-    if (!user_id) {
-      return sendResponse(res, 400, false, "Please login first")
-    }
-    console.log("The user id we got is:", user_id)
-    if (!room_id)
-      return sendResponse(res, 400, false, "Sorry Please provide roomId")
+    const message_id = req.params.messageId
+
+    if (!user_id) return sendResponse(res, 400, false, "Please login first.")
+    if (!room_id) return sendResponse(res, 400, false, "Please provide roomId.")
+    if (!message_id)
+      return sendResponse(res, 400, false, "Please provide messageId.")
 
     const isRoomExist = await roomSchema.findById(room_id)
-    if (!isRoomExist) {
-      return sendResponse(res, 400, false, "No room found.")
-    }
+    if (!isRoomExist) return sendResponse(res, 400, false, "No room found.")
+
     const isMember = isRoomExist.member.includes(user_id)
-    if (!isMember) {
-      return sendResponse(res, false, 400, "Sorry you are not a member.")
-    }
-    const message_id = req.params.messageId
+    if (!isMember)
+      return sendResponse(res, 403, false, "Sorry, you are not a member.")
+
     const isMessage = await messagesSchema.findById(message_id)
-    if (!message_id) {
-      return sendResponse(res, 400, false, "Sorry not message Found.")
-    }
+    if (!isMessage)
+      return sendResponse(res, 400, false, "Sorry, message not found.")
+
     const isSender = isMessage.sender_id.toString() === user_id.toString()
-    if (!isSender) {
+    if (!isSender)
       return sendResponse(
         res,
-        400,
+        403,
         false,
-        "Sorry only sender can delete his message."
+        "Only sender can delete this message."
       )
-    }
-
     await messagesSchema.findByIdAndDelete(message_id)
-    return sendResponse(res, 200, true, "Message deleted.")
+    await roomSchema.updateOne(
+      { _id: room_id },
+      { $pull: { messages: message_id, pinnedMessages: message_id } }
+    )
+
+    return sendResponse(res, 200, true, "Message deleted successfully.")
   } catch (error) {
     console.log("There is an error", error)
     return sendResponse(res, 500, false, "Server Error", [error?.message])

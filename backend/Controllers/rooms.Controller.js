@@ -1,4 +1,4 @@
-const { roomSchema } = require("../Models/rooms-mode")
+const roomSchema = require("../Models/rooms-mode")
 const roomruleSchema = require("../Models/rooms-rules")
 const sendResponse = require("../Utils/send-response")
 const roomsValidation = require("../Validations/rooms.validation")
@@ -238,6 +238,22 @@ const allRooms = async (req, res) => {
       .populate("room_rules", "rules")
       .populate("topicId", "title description")
       .populate("subtopicId", "title description")
+      .populate({
+        path: "messages",
+        select: "sender_id content",
+        populate: {
+          path: "sender_id",
+          select: "first_name last_name",
+        },
+      })
+      .populate({
+        path: "pinnedMessages",
+        select: "content sender_id",
+        populate: {
+          path: "sender_id",
+          select: "first_name last_name",
+        },
+      })
       .limit(limit)
     return sendResponse(res, 200, true, "Rooms retrieved successfully.", rooms)
   } catch (error) {
@@ -431,8 +447,67 @@ const pinMessage = async (req, res) => {
 }
 
 const unpinmessage = async (req, res) => {
-  
+  const room_id = req.params.id || req.params.roomId
+  const message_id = req.params.messageId
+  const { id: userId } = req.userid
+
+  try {
+    const validationError = !userId
+      ? "Please login first."
+      : !room_id
+        ? "Please provide room ID."
+        : !message_id
+          ? "Please provide message ID to unpin."
+          : null
+    if (validationError) return sendResponse(res, 400, false, validationError)
+    const isRoomExist = await roomSchema
+      .findById(room_id)
+      .populate("pinnedMessages")
+    if (!isRoomExist)
+      return sendResponse(res, 400, false, "Sorry, no room found.")
+    const isOwner = isRoomExist.owner.toString() === userId.toString()
+    const isMember = isRoomExist.member.some(
+      (id) => id.toString() === userId.toString()
+    )
+    if (!isOwner && !isMember)
+      return sendResponse(
+        res,
+        403,
+        false,
+        "Only room members or the owner can unpin a message."
+      )
+    const isPinned = isRoomExist.pinnedMessages.some(
+      (msg) =>
+        msg._id?.toString() === message_id.toString() ||
+        msg.toString() === message_id.toString()
+    )
+
+    if (!isPinned)
+      return sendResponse(res, 400, false, "This message is not pinned.")
+    isRoomExist.pinnedMessages.pull(message_id)
+    await isRoomExist.save()
+    await isRoomExist.populate({
+      path: "pinnedMessages",
+      select: "content sender_id createdAt",
+      populate: {
+        path: "sender_id",
+        select: "first_name last_name _id",
+      },
+    })
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Message unpinned successfully.",
+      isRoomExist.pinnedMessages
+    )
+  } catch (error) {
+    console.error("Error while unpinning message:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
 }
+
 const acceptRequest = async (req, res) => {}
 const rejectRequest = async (req, res) => {}
 

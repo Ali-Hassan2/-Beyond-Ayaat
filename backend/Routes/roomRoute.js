@@ -13,6 +13,8 @@ const {
   addRoomRules,
   deleteRoomRules,
   upgradeRoomRules,
+  pinMessage,
+  unpinmessage,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -30,6 +32,8 @@ router
 router
   .route("/upgraderoomrules")
   .patch(usermiddle, checkOwner, upgradeRoomRules)
+router.route("/:roomId/pinmessage/:messageId").post(usermiddle, pinMessage)
+router.route("/:roomId/unpinmessage/:messagId").post(usermiddle, unpinmessage)
 router.route("/changeaccessmode").put(checkOwner, usermiddle, changeaccessmode)
 router.route("/upgraderoominfo").get(checkOwner, usermiddle, updateRoomInfo)
 router.route("/deleteroom").delete(checkOwner, usermiddle, deleteRoom)

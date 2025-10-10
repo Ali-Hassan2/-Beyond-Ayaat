@@ -9,12 +9,12 @@ const sendResponse = (
   const responsePayload = {
     success,
     message,
-  };
+  }
 
-  if (data) responsePayload.data = data;
-  if (errors.length > 0) responsePayload.errors = errors;
+  if (data) responsePayload.data = data
+  if (errors.length > 0) responsePayload.errors = errors
 
-  return res.status(statusCode).json(responsePayload);
-};
+  return res.status(statusCode).json(responsePayload)
+}
 
-module.exports = sendResponse;
+module.exports = sendResponse

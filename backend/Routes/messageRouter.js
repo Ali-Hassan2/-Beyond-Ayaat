@@ -5,6 +5,9 @@ const {
   getAllMessages,
   editMessage,
   deleteMessage,
+  parseReaction,
+  removeReaction,
+  deleteReply,
 } = require("../Controllers/messages.controller")
 const router = express.Router()
 
@@ -12,5 +15,14 @@ router.route("/:roomId/messages").post(usermiddle, sendMessages)
 router.route("/:roomId/messages").get(usermiddle, getAllMessages)
 router.route("/:roomId/messages/:messageId").patch(usermiddle, editMessage)
 router.route("/:roomId/messages/:messageId").delete(usermiddle, deleteMessage)
-
+router.route("/:roomId/parsereply/:messageId")
+route
+  .route("/:roomId/deletereply/:messagId/reply/:replyId")
+  .delete(usermiddle, deleteReply)
+router
+  .route("/:roomId/parsereaction/:messageId")
+  .post(usermiddle, parseReaction)
+router
+  .route("/:roomId/deletereaction/:messageId/reactions/:reactionId")
+  .delete(usermiddle, removeReaction)
 module.exports = router

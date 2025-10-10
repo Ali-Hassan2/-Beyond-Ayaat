@@ -186,4 +186,21 @@ const deleteMessage = async (req, res) => {
   }
 }
 
-module.exports = { sendMessages, getAllMessages, editMessage, deleteMessage }
+const parseReply = async (req, res) => {}
+
+const deleteReply = async (req, res) => {}
+
+const parseReaction = async (req, res) => {}
+
+const removeReaction = async (req, res) => {}
+
+module.exports = {
+  sendMessages,
+  getAllMessages,
+  editMessage,
+  deleteMessage,
+  parseReply,
+  deleteReply,
+  parseReaction,
+  removeReaction,
+}

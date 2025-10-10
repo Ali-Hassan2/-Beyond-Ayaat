@@ -10,10 +10,30 @@ const imageValidation = z
     url: z.string().optional(),
   })
   .optional()
+const reactionsValidation = z
+  .array(
+    z.object({
+      reacter: z.string().min(1),
+      emoji: z.string().min(1),
+    })
+  )
+  .optional()
+  .default([])
+const repliesValidation = z
+  .array(
+    z.object({
+      replier: z.string().min(1),
+      content: z.string().min(1).max(500),
+    })
+  )
+  .optional()
+  .default([])
 
 const messagesValidation = z.object({
   content: contentValidation,
   image: imageValidation,
+  reactions: reactionsValidation,
+  replies: repliesValidation,
 })
 
 module.exports = messagesValidation

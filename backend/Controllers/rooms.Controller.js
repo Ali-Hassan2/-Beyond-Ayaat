@@ -191,6 +191,10 @@ const allRooms = async (req, res) => {
   }
 }
 
+const pinMessage = async (req, res) => {}
+
+const unpinmessage = async (req, res) => {}
+
 const changeaccessmode = async (req, res) => {}
 
 const updateRoomInfo = async (req, res) => {}
@@ -214,4 +218,6 @@ module.exports = {
   addRoomRules,
   deleteRoomRules,
   upgradeRoomRules,
+  pinMessage,
+  unpinmessage,
 }

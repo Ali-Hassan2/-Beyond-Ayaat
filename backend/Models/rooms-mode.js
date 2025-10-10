@@ -65,6 +65,13 @@ const roomSchema = new mongoose.model(
         ref: "roomrulesSchema",
         default: null,
       },
+      pinnedMessages: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "messageSchema",
+          default: [],
+        },
+      ],
     },
     { timestamps: true }
   )

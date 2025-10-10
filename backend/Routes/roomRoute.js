@@ -30,11 +30,13 @@ router
   .route("/deleteroomrules/:id")
   .delete(usermiddle, checkOwner, deleteRoomRules)
 router
-  .route("/upgraderoomrules")
+  .route("/upgraderoomrules/:id")
   .patch(usermiddle, checkOwner, upgradeRoomRules)
 router.route("/:roomId/pinmessage/:messageId").post(usermiddle, pinMessage)
 router.route("/:roomId/unpinmessage/:messagId").post(usermiddle, unpinmessage)
-router.route("/changeaccessmode").put(checkOwner, usermiddle, changeaccessmode)
+router
+  .route("/changeaccessmode/:id")
+  .patch(usermiddle, checkOwner, changeaccessmode)
 router.route("/upgraderoominfo").get(checkOwner, usermiddle, updateRoomInfo)
 router.route("/deleteroom").delete(checkOwner, usermiddle, deleteRoom)
 router

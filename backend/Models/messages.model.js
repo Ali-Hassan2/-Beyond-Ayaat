@@ -30,7 +30,7 @@ const messagesSchema = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
           },
-          emoji: string,
+          emoji: String,
         },
       ],
       replies: [

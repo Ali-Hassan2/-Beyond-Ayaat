@@ -142,25 +142,81 @@ const addRoomRules = async (req, res) => {
 }
 
 const deleteRoomRules = async (req, res) => {
-  // TODO: remove the rules not room
-  // try {
-  //   const room_id = req.params.id
-  //   if (!room_id) {
-  //     return sendResponse(res, 400, false, "Please provide roomId")
-  //   }
-  //   const isRoom = await roomSchema.findByIdAndDelete(room_id)
-  //   if (!isRoom) {
-  //     return sendResponse(res, 400, false, "No Room Founded Sorry.")
-  //   }
-  //   return sendResponse(res, 200, true, "Room deleted successfully")
-  // } catch (error) {
-  //   console.log("There is an error", error)
-  //   return sendResponse(res, 500, false, "Server Error", [error?.message])
-  // }
+  try {
+    const { id: userId } = req.userid
+    const roomId = req.params.roomId || req.params.id
+    if (!userId) {
+      return sendResponse(res, 400, false, "Please login first")
+    }
+    if (!roomId) {
+      return sendResponse(res, 400, false, "Please provide roomId.", null)
+    }
+    const roomExist = await roomSchema.findById(roomId)
+    if (!roomExist) {
+      return sendResponse(res, 400, false, "Sorry no room found.")
+    }
+    const roomRules = roomExist.room_rules
+    if (!roomRules) {
+      return sendResponse(
+        res,
+        400,
+        "Sorry there are no room rules associated with this room."
+      )
+    }
+    await roomruleSchema.findByIdAndDelete(roomRules)
+    roomExist.room_rules = null
+    await roomExist.save()
+    return sendResponse(res, 200, true, "Room Rules delete successfully")
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
 }
 
-const upgradeRoomRules = async (req, res) => {}
+const upgradeRoomRules = async (req, res) => {
+  try {
+    const room_id = req.params.id || req.params.roomId
+    const { id: userId } = req.userid
+    const room_rules = req.body?.room_rules
+    if (!userId) {
+      return sendResponse(res, 400, false, "Sorry please login first")
+    }
+    if (!room_id) {
+      return sendResponse(res, 400, false, "Please Provide roomId.")
+    }
+    const isRoomExist = await roomSchema.findById(room_id)
+    if (!isRoomExist)
+      return sendResponse(res, 400, false, "Sorry no room found.")
 
+    const roomRules = isRoomExist.room_rules
+    if (!roomRules) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Sorry no rules associated with this room."
+      )
+    }
+    const updatedRules = await roomruleSchema.findByIdAndUpdate(
+      roomRules,
+      {
+        rules: room_rules,
+      },
+      { new: true }
+    )
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Roon Rules updated succesfully",
+      updatedRules
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendRespons(res, 500, false, "Server Error", [error?.message])
+  }
+}
 const allRooms = async (req, res) => {
   try {
     let { limit } = req.query
@@ -191,12 +247,57 @@ const allRooms = async (req, res) => {
   }
 }
 
+const changeaccessmode = async (req, res) => {
+  const parseResult = roomsValidation
+    .pick({ isPublic: true })
+    .safeParse(req.body)
+
+  if (!parseResult.success) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please validate the body",
+      parseResult.error.issues.map((err) => err?.message)
+    )
+  }
+
+  try {
+    const room_id = req.params.id || req.params.roomId
+    const { id: user_id } = req.userid
+
+    if (!user_id) {
+      return sendResponse(res, 400, false, "Please login first")
+    }
+
+    const { isPublic } = parseResult.data
+    const isRoomExist = await roomSchema.findById(room_id)
+
+    if (!isRoomExist) {
+      return sendResponse(res, 400, false, "Sorry no room found")
+    }
+    if (isRoomExist.isPublic === isPublic) {
+      return sendResponse(res, 400, false, "Please change the status")
+    }
+    isRoomExist.isPublic = isPublic
+    await isRoomExist.save()
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      `Room access updated successfully. Now public = ${isPublic}`,
+      isRoomExist
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
 const pinMessage = async (req, res) => {}
 
 const unpinmessage = async (req, res) => {}
-
-const changeaccessmode = async (req, res) => {}
-
 const updateRoomInfo = async (req, res) => {}
 
 const deleteRoom = async (req, res) => {}

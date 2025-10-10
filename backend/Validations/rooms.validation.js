@@ -16,6 +16,11 @@ const topicIdValidation = z.string().nullable().default(null)
 const memberValidation = z.array(z.string()).default([])
 const room_rulesValidation = z.string().default(null).optional()
 const messagesValidation = z.array(z.string()).nullable().default([])
+const pinnedMessagesValidation = z
+  .array(z.string())
+  .nullable()
+  .default([])
+  .optional()
 const roomsValidation = z.object({
   title: titleValidation,
   description: descriptionValidation,
@@ -27,6 +32,7 @@ const roomsValidation = z.object({
   topicId: topicIdValidation,
   room_rules: room_rulesValidation,
   messages: messagesValidation,
+  pinnedMessages: pinnedMessagesValidation,
 })
 
 module.exports = roomsValidation

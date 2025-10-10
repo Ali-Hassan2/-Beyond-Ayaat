@@ -1,4 +1,4 @@
-const z = require("zod");
+const z = require("zod")
 
 const adminvalildationSchema = z.object({
   first_name: z
@@ -11,5 +11,5 @@ const adminvalildationSchema = z.object({
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters long" }),
-});
-module.exports = adminvalildationSchema;
+})
+module.exports = adminvalildationSchema

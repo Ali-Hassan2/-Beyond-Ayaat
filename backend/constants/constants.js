@@ -31,6 +31,12 @@ const ATRISKUSERS = Object.freeze({
   DANGER: "danger",
 })
 
+const REQUEST_STATUS = Object.freeze({
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+})
+
 const REPORTINGREASONS = Object.freeze({
   INAPPROPRIATE_LANGUAGE: "Foul or disrespectful language",
   HATE_SPEECH: "Hate or sectarian speech",
@@ -51,4 +57,5 @@ module.exports = {
   USERSTATUS,
   ATRISKUSERS,
   REPORTINGREASONS,
+  REQUEST_STATUS,
 }

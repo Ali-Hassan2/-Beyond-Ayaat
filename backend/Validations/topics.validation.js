@@ -1,4 +1,4 @@
-const z = require("zod");
+const z = require("zod")
 
 const topicvalidation = z.object({
   title: z.string().min(3, {
@@ -10,6 +10,6 @@ const topicvalidation = z.object({
   icon: z.string().min(1, {
     message: "Icon is required",
   }),
-});
+})
 
-module.exports = topicvalidation;
+module.exports = topicvalidation

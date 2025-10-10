@@ -1,9 +1,9 @@
-const { roomSchema } = require("../Models/rooms-mode")
+const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 
 const checkOwner = async (req, res, next) => {
   try {
-    const room_id = req.params.id
+    const room_id = req.params.id || req.params.roomId
     const userId = req.userid.id || req.userid
     console.log("The room_id is:", room_id)
     console.log("The user id is:", userId)

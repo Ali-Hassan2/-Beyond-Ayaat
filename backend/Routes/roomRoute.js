@@ -13,6 +13,11 @@ const {
   addRoomRules,
   deleteRoomRules,
   upgradeRoomRules,
+  pinMessage,
+  unpinmessage,
+  makerequest,
+  getAllrequestsWithStatus,
+  getMyRequests,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -28,14 +33,20 @@ router
   .route("/deleteroomrules/:id")
   .delete(usermiddle, checkOwner, deleteRoomRules)
 router
-  .route("/upgraderoomrules")
+  .route("/upgraderoomrules/:id")
   .patch(usermiddle, checkOwner, upgradeRoomRules)
-router.route("/changeaccessmode").put(checkOwner, usermiddle, changeaccessmode)
-router.route("/upgraderoominfo").get(checkOwner, usermiddle, updateRoomInfo)
-router.route("/deleteroom").delete(checkOwner, usermiddle, deleteRoom)
+router.route("/:roomId/pinmessage/:messageId").post(usermiddle, pinMessage)
+router.route("/:roomId/unpinmessage/:messageId").post(usermiddle, unpinmessage)
 router
-  .route("/acceptuserroomrequest")
-  .post(checkOwner, usermiddle, acceptRequest)
-router.route("rejectrequest").post(checkOwner, usermiddle, rejectRequest)
+  .route("/changeaccessmode/:id")
+  .patch(usermiddle, checkOwner, changeaccessmode)
+router.route("/upgraderoominfo/:id").put(usermiddle, checkOwner, updateRoomInfo)
+router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
+router.route("/:roomId/createrequest").post(usermiddle, makerequest)
+router.route("/getallyourrequestswithstatus").get(usermiddle, getMyRequests)
+router
+  .route("/acceptuserroomrequest/room/:roomId/user/:userId")
+  .put(usermiddle, checkOwner, acceptRequest)
+router.route("/rejectrequest").post(checkOwner, usermiddle, rejectRequest)
 
 module.exports = router

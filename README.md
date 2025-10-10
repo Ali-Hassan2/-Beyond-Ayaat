@@ -1,94 +1,83 @@
-Beyond Ayaat – Backend Overview
+<h1 align="center">
+  <strong>Beyond Ayaat – Backend</strong>
+</h1>
 
-Beyond Ayaat is a platform designed to explore modern Quranic wisdom through the lens of scientific research and intellectual discussion. The application provides a dynamic environment for users to engage in thoughtful dialogue, share knowledge, and contribute to meaningful discussions that bridge the gap between faith and modern understanding.
+<p align="center">
+  A modern backend system that bridges Quranic wisdom with scientific and intellectual exploration.
+</p>
 
-Project Overview
+---
 
-This repository contains the backend logic and APIs for Beyond Ayaat. It serves as the core engine responsible for handling data management, authentication, authorization, and all application-level operations that support the platform’s frontend. The backend is fully controlled and maintained to ensure smooth and secure interaction between users, rooms, and content modules.
+## <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Blue-info-icon.svg" width="18" /> Overview
 
-Purpose
+Beyond Ayaat is a backend service designed to power a platform dedicated to exploring **Quranic insights through the lens of modern science, philosophy, and research**.  
+It enables structured discussions, organized content publishing, and meaningful interactions among users who seek to understand the intersection of **faith and knowledge**.
 
-Beyond Ayaat aims to provide a space where users can explore topics related to the Quran, science, philosophy, and modern thought. It encourages deep discussions and allows users to engage with various types of content including blogs, articles, and research-based findings. The system is structured to promote organized learning, interactive debate, and the discovery of knowledge through categorized discussions.
+The backend provides robust APIs, secure authentication, and efficient data handling to ensure seamless communication with the frontend.
 
-Key Features
-Discussion Rooms
+---
 
-Users can join or create discussion rooms based on selected topics and subtopics.
+## <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Blue-info-icon.svg" width="18" /> Purpose
 
-Rooms are categorized for easy navigation and discovery.
+The purpose of Beyond Ayaat is to create a space where users can:
 
-Each room can have defined rules and member management features.
+- Engage in **deep, topic-driven discussions** related to Quranic wisdom and scientific discovery.  
+- Share **articles, research, and blogs** that promote intellectual and spiritual understanding.  
+- Build a community rooted in **respectful debate and organized learning**.
 
-Room owners have control over their room settings and member permissions.
+---
 
-Topic and Subtopic Filtering
+## <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Blue-info-icon.svg" width="18" /> Core Features
 
-The platform allows users to explore content based on categorized topics and subtopics.
+### Discussion Rooms
+- Users can **create or join** categorized discussion rooms.
+- Each room includes **topics**, **subtopics**, and **custom rules**.
+- Room owners manage members, permissions, and pinned messages.
+- Supports **real-time discussion threads** through structured message handling.
 
-Filtering ensures that discussions and resources remain relevant to user interests.
+### Topic and Subtopic Filtering
+- Explore rooms and discussions by **topic** or **subtopic**.
+- Enables **focused exploration** of specific domains of knowledge.
 
-Blogs and Articles
+### Blogs and Articles
+- Users can **write, publish, and edit** their own blogs or articles.
+- Readers can **comment, engage, and learn** from community insights.
+- Feed includes **diverse and randomized content** to promote exploration.
 
-Users can write, publish, and manage their own blogs or articles.
+### User Interaction and Reporting
+- Users can **report content or behavior** that violates community guidelines.
+- Admins can **review and resolve** reports for a safe and respectful environment.
+- Users can **comment on posts** to share ideas or research findings.
 
-Blogs can be viewed by others, and users can comment or interact on published content.
+### User Profile Management
+- Each user has a **personalized dashboard** with their activity and contributions.
+- Manage owned rooms, written posts, and discussions in one place.
 
-The feed displays a random and diverse set of blogs and articles for exploration.
+### Room and Report Management
+- Room owners can **monitor participation** and enforce discussion rules.
+- Admins have **centralized control** over reports and moderation.
 
-User Interaction and Reporting
+### Findings and Research
+- Highlights **community-discovered insights** and cumulative knowledge.
+- Serves as a **research repository** reflecting modern interpretation and discussion outcomes.
 
-Users can report inappropriate behavior or content to maintain a respectful community.
+---
 
-A structured reporting and management system ensures that issues are reviewed and handled appropriately.
+## <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Blue-info-icon.svg" width="18" /> Technology Stack
 
-Users can comment on posts to share opinions and insights.
+| Layer | Technology |
+|:------|:------------|
+| **Runtime Environment** | Node.js |
+| **Framework** | Express.js |
+| **Database** | MongoDB with Mongoose ODM |
+| **Validation** | Zod |
+| **Cloud Storage** | Cloudinary |
+| **Authentication** | JWT-based authentication |
+| **API Design** | RESTful architecture |
 
-User Profile Management
+---
 
-Each user has a personalized profile displaying their information, activities, and contributions.
+## <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Blue-info-icon.svg" width="18" /> Architecture
 
-Users can manage their rooms, posts, and interactions from their profile dashboard.
+The backend follows a **modular, maintainable architecture** with clear separation of concerns:
 
-Room and Reports Management
-
-The system includes administrative management of rooms and reports.
-
-Room owners can monitor member activity and enforce room policies.
-
-Admins can review reported users, content, and take necessary actions.
-
-Randomized Content Delivery
-
-The home feed provides a variety of random posts, blogs, and discussions for users to explore.
-
-This ensures a fresh experience each time while maintaining relevance to the platform’s core themes.
-
-Findings and Research
-
-Beyond Ayaat highlights key findings and discoveries made through discussions and research.
-
-Users can explore the cumulative insights contributed by the community and moderators.
-
-Technology Stack
-
-Runtime Environment: Node.js
-
-Framework: Express.js
-
-Database: MongoDB with Mongoose ODM
-
-Validation: Zod
-
-Cloud Storage: Cloudinary for image and media handling
-
-Authentication: JWT-based user authentication
-
-API Structure: RESTful endpoints for modular and maintainable design
-
-Architecture
-
-The backend follows a modular architecture pattern with separate folders for controllers, models, routes, middleware, and utilities. Each feature is designed with scalability and maintainability in mind.
-
-Summary
-
-Beyond Ayaat’s backend is responsible for ensuring a seamless, secure, and interactive experience for users engaging in Quranic and scientific discussions. It provides structured management of data, real-time interaction through rooms, user-generated content, and a knowledge-sharing ecosystem that grows with community participation.

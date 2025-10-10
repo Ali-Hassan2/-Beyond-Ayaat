@@ -14,9 +14,7 @@ const contentValidation = z
   .string()
   .min(10, { message: "Content should be minimum 10 chars long" })
   .max(500, { message: "Content should not exceed 500 chars" })
-
 const statusValidation = z.string()
-
 const imageValidation = z
   .object({
     public_id: z.string().optional(),

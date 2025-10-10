@@ -1,4 +1,4 @@
-const { roomSchema } = require("../Models/rooms-mode")
+const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 
 const checkOwner = async (req, res, next) => {

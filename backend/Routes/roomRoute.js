@@ -45,8 +45,8 @@ router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
 router.route("/:roomId/createrequest").post(usermiddle, makerequest)
 router.route("/getallyourrequestswithstatus").get(usermiddle, getMyRequests)
 router
-  .route("/acceptuserroomrequest")
-  .post(checkOwner, usermiddle, acceptRequest)
+  .route("/acceptuserroomrequest/room/:roomId/user/:userId")
+  .put(usermiddle, checkOwner, acceptRequest)
 router.route("/rejectrequest").post(checkOwner, usermiddle, rejectRequest)
 
 module.exports = router

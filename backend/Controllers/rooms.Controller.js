@@ -600,7 +600,62 @@ const getMyRequests = async (req, res) => {
   }
 }
 
-const acceptRequest = async (req, res) => {}
+const acceptRequest = async (req, res) => {
+  const { userId, roomId } = req.params
+  const { id: ownerId } = req.userid
+
+  try {
+    if (!ownerId) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    if (!roomId || !userId) {
+      return sendResponse(res, 400, false, "Room ID and User ID are required.")
+    }
+    const room = await roomSchema
+      .findById(roomId)
+      .populate("requests.user", "first_name last_name")
+
+    if (!room) {
+      return sendResponse(res, 404, false, "Room not found.")
+    }
+    if (room.owner.toString() !== ownerId.toString()) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "You are not authorized to accept requests for this room."
+      )
+    }
+    const requestIndex = room.requests.findIndex(
+      (r) =>
+        r.user._id.toString() === userId.toString() &&
+        r.status === REQUEST_STATUS.PENDING
+    )
+    if (requestIndex === -1) {
+      return sendResponse(res, 400, false, "No pending request found.")
+    }
+    const approvedRequest = room.requests[requestIndex]
+    approvedRequest.status = REQUEST_STATUS.APPROVED
+
+    if (!room.member.includes(userId)) {
+      room.member.push(userId)
+    }
+    room.requests.splice(requestIndex, 1)
+    await room.save()
+    await room.populate("member", "first_name last_name")
+
+    return sendResponse(res, 200, true, "Request accepted successfully.", {
+      room_id: room._id,
+      room_title: room.title,
+      accepted_user: approvedRequest.user,
+      members: room.member,
+    })
+  } catch (error) {
+    console.error("Error in acceptRequest:", error)
+    return sendResponse(res, 500, false, "Server Error", [error.message])
+  }
+}
+
 const rejectRequest = async (req, res) => {}
 
 module.exports = {

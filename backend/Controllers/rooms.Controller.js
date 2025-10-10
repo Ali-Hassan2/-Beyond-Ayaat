@@ -555,8 +555,49 @@ const makerequest = async (req, res) => {
   }
 }
 
-const getAllrequestsWithStatus = async (req, res) => {
-  res.send("Hello")
+const getMyRequests = async (req, res) => {
+  const { id: userId } = req.userid
+  try {
+    if (!userId) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    const rooms = await roomSchema
+      .find({ "requests.user": userId })
+      .populate("requests.user", "first_name last_name")
+      .populate("owner", "first_name last_name")
+      .populate("topicId", "title")
+      .populate("subtopicId", "title")
+      .select("title description owner topicId subtopicId requests")
+    if (!rooms || rooms.length === 0) {
+      return sendResponse(res, 200, true, "No requests found.", [])
+    }
+    const formatted = rooms.map((room) => {
+      const reqDetail = room.requests.find(
+        (r) => r.user._id.toString() === userId.toString()
+      )
+      return {
+        room_id: room._id,
+        room_title: room.title,
+        room_description: room.description,
+        topic: room.topicId?.title || null,
+        subtopic: room.subtopicId?.title || null,
+        owner: room.owner
+          ? `${room.owner.first_name} ${room.owner.last_name}`
+          : null,
+        status: reqDetail?.status || "unknown",
+      }
+    })
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Requests fetched successfully.",
+      formatted
+    )
+  } catch (error) {
+    console.error("Error fetching user requests:", error)
+    return sendResponse(res, 500, false, "Server Error", [error.message])
+  }
 }
 
 const acceptRequest = async (req, res) => {}
@@ -578,5 +619,5 @@ module.exports = {
   pinMessage,
   unpinmessage,
   makerequest,
-  getAllrequestsWithStatus,
+  getMyRequests,
 }

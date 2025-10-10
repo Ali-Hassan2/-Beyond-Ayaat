@@ -381,8 +381,58 @@ const deleteRoom = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
-const pinMessage = async (req, res) => {}
-const unpinmessage = async (req, res) => {}
+const pinMessage = async (req, res) => {
+  try {
+    const { id: user_id } = req.userid
+    const room_id = req.params.roomId
+    const message_id = req.params.messageId
+
+    if (!user_id) return sendResponse(res, 400, false, "Please login first.")
+    if (!room_id)
+      return sendResponse(res, 400, false, "Please provide the room ID.")
+    if (!message_id)
+      return sendResponse(res, 400, false, "Please provide the message ID.")
+    const isRoomExist = await roomSchema.findById(room_id)
+    if (!isRoomExist)
+      return sendResponse(res, 400, false, "Sorry, no room found.")
+    const messageExists = isRoomExist.messages?.includes(message_id)
+    if (!messageExists)
+      return sendResponse(res, 400, false, "Message not found in this room.")
+    const isOwner = isRoomExist.owner.toString() === user_id.toString()
+    const isMember = isRoomExist.member?.includes(user_id)
+    if (!isOwner && !isMember) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "Only room members or the owner can pin a message."
+      )
+    }
+    if (isRoomExist.pinnedMessages?.includes(message_id)) {
+      return sendResponse(res, 400, false, "Message already pinned.")
+    }
+    isRoomExist.pinnedMessages.push(message_id)
+    await isRoomExist.save()
+    await isRoomExist.populate({
+      path: "pinnedMessages",
+      select: "content sender_id createdAt",
+    })
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Message pinned successfully.",
+      isRoomExist
+    )
+  } catch (error) {
+    console.error("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const unpinmessage = async (req, res) => {
+  
+}
 const acceptRequest = async (req, res) => {}
 const rejectRequest = async (req, res) => {}
 

@@ -1,4 +1,4 @@
-const { REQUEST_STATUS } = require("../constants/constants")
+const { REQUEST_STATUS, ROOMROLES } = require("../constants/constants")
 const roomSchema = require("../Models/rooms-mode")
 const roomruleSchema = require("../Models/rooms-rules")
 const sendResponse = require("../Utils/send-response")
@@ -96,10 +96,13 @@ const getOwnerRooms = async (req, res) => {
       .find({ owner: userId })
       .populate("topicId")
       .populate("subtopicId")
-      .populate("member")
       .populate("requests")
       .populate("owner")
       .populate("room_rules")
+      .populate({
+        path: "member.user",
+        select: "first_name last_name email",
+      })
       .sort({ "topicId.title": 1, "subtopicId.title": 1 })
     return sendResponse(res, 200, true, "Owner roomos fetched.", rooms)
   } catch (error) {
@@ -107,7 +110,6 @@ const getOwnerRooms = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
-
 const addRoomRules = async (req, res) => {
   const parseResult = roomsValidation
     .pick({ room_rules: true })
@@ -709,6 +711,169 @@ const rejectRequest = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
+
+const addAdminRole = async (req, res) => {
+  const { id: owner } = req.userid
+  const { roomId, memberId } = req.params
+
+  try {
+    if (!owner) {
+      return sendResponse(res, 400, false, "Sorry, please login first.")
+    }
+    if (!memberId) {
+      return sendResponse(res, 400, false, "Please provide memberId.")
+    }
+    const room = await roomSchema.findById(roomId)
+    if (!room) {
+      return sendResponse(res, 404, false, "Room not found.")
+    }
+    if (room.admins.some((ad) => ad._id.toString() === memberId.toString())) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        `Already admin the room ${room.title}`,
+        null
+      )
+    }
+    const isMember = room.member.some(
+      (m) => m._id.toString() === memberId.toString()
+    )
+    if (!isMember) {
+      return sendResponse(res, 400, false, "Not a member of this room.")
+    }
+    const memberIndex = room.member.findIndex(
+      (mem) =>
+        mem._id.toString() === memberId.toString() &&
+        mem.role === ROOMROLES.MEMBER
+    )
+    if (memberIndex === -1) {
+      return sendResponse(res, 400, false, "User not found or not eligible.")
+    }
+    room.member[memberIndex].role = ROOMROLES.ADMIN
+    const newAdmin = room.member[memberIndex]
+    room.admins.push(newAdmin)
+    room.member.splice(memberIndex, 1)
+    await room.save()
+    return sendResponse(res, 200, true, "Member promoted to admin.", room)
+  } catch (error) {
+    console.log("There is an error:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const updateMemberRole = async (req, res) => {
+  const { roomId, adminId } = req.params
+  const { id: userId } = req.userid
+
+  try {
+    if (!userId) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    if (!roomId) {
+      return sendResponse(res, 400, false, "Please provide roomId.")
+    }
+    if (!adminId) {
+      return sendResponse(res, 400, false, "Please provide adminId.")
+    }
+    const room = await roomSchema.findById(roomId)
+    if (!room) {
+      return sendResponse(res, 404, false, "Room not found.")
+    }
+    const isOwner = room.owner.toString() === userId.toString()
+    const isAdmin = room.admins.some(
+      (a) => a._id.toString() === userId.toString()
+    )
+    if (!isOwner && !isAdmin) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "Only room owner or admins can perform this action."
+      )
+    }
+    if (userId.toString() === adminId.toString()) {
+      return sendResponse(res, 400, false, "You cannot change your own role.")
+    }
+    const adminIndex = room.admins.findIndex(
+      (ad) =>
+        ad._id.toString() === adminId.toString() && ad.role === ROOMROLES.ADMIN
+    )
+    if (adminIndex === -1) {
+      return sendResponse(res, 400, false, "No admin found with this ID.")
+    }
+    room.admins[adminIndex].role = ROOMROLES.MEMBER
+    const updatedMember = room.admins[adminIndex]
+    room.member.push(updatedMember)
+    room.admins.splice(adminIndex, 1)
+    await room.save()
+    return sendResponse(
+      res,
+      200,
+      true,
+      `Role updated to MEMBER for user ${updatedMember._id}.`,
+      room
+    )
+  } catch (error) {
+    console.error("There is an error:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const deleteMember = async (req, res) => {
+  const { id: userId } = req.userid
+  const { memberId, roomId } = req.params
+
+  try {
+    const validationError = !userId
+      ? "Please login first"
+      : !memberId
+        ? "Please provide memberId or adminId"
+        : !roomId
+          ? "Please provide roomId"
+          : null
+    if (validationError) {
+      return sendResponse(res, 400, false, validationError)
+    }
+    const room = await roomSchema.findById(roomId)
+    if (!room) {
+      return sendResponse(res, 400, false, "No Room Found.")
+    }
+    const memberIsAdmin = room.admins.some(
+      (ad) => ad._id.toString() === memberId.toString()
+    )
+    const memberIsMember = room.member.some(
+      (mb) => mb._id.toString() === memberId.toString()
+    )
+    if (!memberIsAdmin && !memberIsMember) {
+      return sendResponse(res, 400, false, "No Member or Admin Found.")
+    }
+    const isOwner = room.owner.toString() === userId.toString()
+    const isAdmin = room.admins.some(
+      (ad) => ad._id.toString() === userId.toString()
+    )
+    const isSelfRemoval = userId.toString() === memberId.toString()
+    if (!isSelfRemoval && !isOwner && !isAdmin) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "You are not authorized to remove this user."
+      )
+    }
+    if (memberIsAdmin) {
+      room.admins.pull(memberId)
+    } else if (memberIsMember) {
+      room.member.pull(memberId)
+    }
+    await room.save()
+    return sendResponse(res, 200, true, "Member removed successfully.", room)
+  } catch (error) {
+    console.error("There is an error:", error)
+    return sendResponse(res, 500, false, "Server error", [error?.message])
+  }
+}
+
 module.exports = {
   createNewRoom,
   getOwnerRooms,
@@ -726,4 +891,7 @@ module.exports = {
   unpinmessage,
   makerequest,
   getMyRequests,
+  addAdminRole,
+  updateMemberRole,
+  deleteMember,
 }

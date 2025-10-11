@@ -51,6 +51,11 @@ const REPORTINGREASONS = Object.freeze({
   OTHER: "Other",
 })
 
+const ROOMROLES = Object.freeze({
+  MEMBER: "member",
+  ADMIN: "admin",
+})
+
 module.exports = {
   PROFESSIONS,
   SOCIALLINKS,
@@ -58,4 +63,5 @@ module.exports = {
   ATRISKUSERS,
   REPORTINGREASONS,
   REQUEST_STATUS,
+  ROOMROLES,
 }

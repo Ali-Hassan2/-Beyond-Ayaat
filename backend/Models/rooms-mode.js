@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { REQUEST_STATUS } = require("../constants/constants")
+const { REQUEST_STATUS, ROOMROLES } = require("../constants/constants")
 
 const roomSchema = new mongoose.Schema(
   {
@@ -25,6 +25,19 @@ const roomSchema = new mongoose.Schema(
       required: true,
     },
     isPublic: { type: Boolean, default: true },
+    admins: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        },
+        role: {
+          type: String,
+          enum: Object.values(ROOMROLES),
+          default: ROOMROLES.ADMIN,
+        },
+      },
+    ],
     requests: [
       {
         user: {
@@ -40,9 +53,15 @@ const roomSchema = new mongoose.Schema(
         _id: false,
       },
     ],
-
     member: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "user", default: [] },
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        role: {
+          type: String,
+          enum: Object.values(ROOMROLES),
+          default: ROOMROLES.MEMBER,
+        },
+      },
     ],
     messages: [
       {

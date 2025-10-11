@@ -16,8 +16,10 @@ const {
   pinMessage,
   unpinmessage,
   makerequest,
-  getAllrequestsWithStatus,
   getMyRequests,
+  addAdminRole,
+  updateMemberRole,
+  deleteMember,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -50,5 +52,16 @@ router
 router
   .route("/rejectrequest/room/:roomId/request/:requestId")
   .patch(usermiddle, checkOwner, rejectRequest)
+router
+  .route("/addadninroleformember/room/:roomId/member/:memberId")
+  .post(usermiddle, checkOwner, addAdminRole)
+router
+  .route("/changeadminroletomember/room/:roomId/admin/:adminId")
+  .patch(usermiddle, updateMemberRole)
+router
+  .route("/removeroomconsumer/room/:roomId/membertoremove/:memberId")
+  .delete(usermiddle, deleteMember)
+
+//searchfilter?topicId?subtopicId
 
 module.exports = router

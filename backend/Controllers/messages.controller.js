@@ -88,7 +88,9 @@ const getAllMessages = async (req, res) => {
     if (!room) {
       return sendResponse(res, 400, false, "No Room Found.")
     }
-    const isMember = room.member.includes(userId)
+    const isMember = room.member.some(
+      (me) => me._id && me._id.toString() === userId.toString()
+    )
     if (!isMember) {
       return sendResponse(res, 403, false, "You are not a member of this room.")
     }
@@ -127,7 +129,11 @@ const editMessage = async (req, res) => {
       return sendResponse(res, 400, false, "Message ID is required.")
     const room = await roomSchema.findById(roomId)
     if (!room) return sendResponse(res, 404, false, "Room not found.")
-    if (!room.member.includes(userId))
+    if (
+      !room.member.some(
+        (me) => me._id && me._id.toString() === userId.toString()
+      )
+    )
       return sendResponse(res, 403, false, "You are not a member of this room.")
     const message = await messagesSchema.findById(messageId)
     if (!message) return sendResponse(res, 404, false, "Message not found.")
@@ -164,7 +170,9 @@ const deleteMessage = async (req, res) => {
     const isRoomExist = await roomSchema.findById(room_id)
     if (!isRoomExist) return sendResponse(res, 400, false, "No room found.")
 
-    const isMember = isRoomExist.member.includes(user_id)
+    const isMember = isRoomExist.member.find(
+      (r) => r._id.toString() === user_id.toString()
+    )
     if (!isMember)
       return sendResponse(res, 403, false, "Sorry, you are not a member.")
 
@@ -193,7 +201,9 @@ const deleteMessage = async (req, res) => {
   }
 }
 
-const parseReply = async (req, res) => {}
+const parseReply = async (req, res) => {
+  res.send("Please do it.")
+}
 
 const deleteReply = async (req, res) => {}
 

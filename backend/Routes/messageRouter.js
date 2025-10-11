@@ -16,14 +16,7 @@ router.route("/:roomId/messages").post(usermiddle, sendMessages)
 router.route("/:roomId/messages").get(usermiddle, getAllMessages)
 router.route("/:roomId/messages/:messageId").patch(usermiddle, editMessage)
 router.route("/:roomId/messages/:messageId").delete(usermiddle, deleteMessage)
-router.route("/:roomId/parsereply/:messageId").post(usermiddle, parseReply)
 router
-  .route("/:roomId/deletereply/:messagId/reply/:replyId")
-  .delete(usermiddle, deleteReply)
-router
-  .route("/:roomId/parsereaction/:messageId")
-  .post(usermiddle, parseReaction)
-router
-  .route("/:roomId/deletereaction/:messageId/reactions/:reactionId")
-  .delete(usermiddle, removeReaction)
+  .route("/givereaction/room/:roomId/message/:messageId")
+  .post(usermiddle, parseReply)
 module.exports = router

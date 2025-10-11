@@ -668,7 +668,47 @@ const acceptRequest = async (req, res) => {
   }
 }
 
-const rejectRequest = async (req, res) => {}
+const rejectRequest = async (req, res) => {
+  const { requestId, roomId } = req.params
+  if (!requestId && !roomId) {
+    return sendResponse(
+      res,
+      400,
+      false,
+      "Please provide the requestId and roomId."
+    )
+  }
+  try {
+    const { id: owner } = req.userid
+    if (!owner) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    const room = await roomSchema
+      .findById(roomId)
+      .populate("requests.user", "first_name last_name")
+
+    const requestIndex = room.requests.findIndex(
+      (request) =>
+        request.user._id.toString() === requestId.toString() &&
+        request.status === REQUEST_STATUS.PENDING
+    )
+    if (requestIndex === -1) {
+      return sendResponse(res, 400, false, "Sorry no request found.")
+    }
+    const rejectedRequest = room.requests[requestIndex]
+    rejectRequest.status = rejectRequest.status = REQUEST_STATUS.REJECTED
+    room.requests.splice(requestIndex, 1)
+    await room.save()
+    return sendResponse(res, 200, true, "Request rejected successfully", {
+      room_id: room._id,
+      room_title: room.title,
+      rejected_user: rejectedRequest.user,
+    })
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
 module.exports = {
   createNewRoom,
   getOwnerRooms,

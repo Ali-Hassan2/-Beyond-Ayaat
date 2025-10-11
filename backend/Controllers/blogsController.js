@@ -4,6 +4,7 @@ const sendResponse = require("../Utils/send-response")
 const blogsSchema = require("../Models/blogs-model")
 const commentsValidation = require("../Validations/comment.schema")
 const commentSchema = require("../Models/comment-model")
+const { BLOGSTATUS } = require("../constants/constants")
 const cloudinary = require("cloudinary").v2
 // const writeBlog = async (req, res) => {
 //   const blogsSafeVal = blogsValidation.safeParse(req.body)
@@ -118,7 +119,7 @@ const writeDraftBlog = async (req, res) => {
       createdAt: "",
       topic_id: req.body.topic_id || null,
       subtopicId: req.body.subtopicId || null,
-      status: "draft",
+      status: BLOGSTATUS.DRAFT,
     })
     await draftBlod.save()
     return sendResponse(res, 200, true, "Your Blog saved in Drafts", draftBlod)

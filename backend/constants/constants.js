@@ -56,7 +56,28 @@ const ROOMROLES = Object.freeze({
   ADMIN: "admin",
 })
 
+const ROOMLOGS = Object.freeze({
+  JOINED: "joined",
+  LEFT: "left",
+  ACCESS_CHANGED: "access changed",
+  ROLE_ASSIGNED: "role_assigned",
+  ROLE_UPDATED: "role_updated",
+  ROLE_REMOVED: "role_removed",
+  MESSAGE_SENT: "message_sent",
+  MESSAGE_DELETED: "message_deleted",
+  ROOM_UPDATED: "room_updated",
+  RULE_ADDED: "rule_added",
+  RULE_UPDATED: "rule_updated",
+  RULE_DELETED: "rule_deleted",
+  REQUEST_ACCEPTED: "request_accepted",
+  REQUEST_REJECTED: "request_rejected",
+  ROOM_CREATED: "room_created",
+  PIN_MESSAGE: "pin_message",
+  UNPIN_MESSAGE: "unpin_message",
+})
+
 module.exports = {
+  BLOGSTATUS,
   PROFESSIONS,
   SOCIALLINKS,
   USERSTATUS,
@@ -64,4 +85,5 @@ module.exports = {
   REPORTINGREASONS,
   REQUEST_STATUS,
   ROOMROLES,
+  ROOMLOGS,
 }

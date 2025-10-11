@@ -1,4 +1,9 @@
-const { REQUEST_STATUS, ROOMROLES } = require("../constants/constants")
+const {
+  REQUEST_STATUS,
+  ROOMROLES,
+  ROOMLOGS,
+} = require("../constants/constants")
+const roomActivitySchema = require("../Models/activityLogsForRoom.model")
 const roomSchema = require("../Models/rooms-mode")
 const roomruleSchema = require("../Models/rooms-rules")
 const sendResponse = require("../Utils/send-response")
@@ -15,20 +20,17 @@ const createNewRoom = async (req, res) => {
       parseResult.error.issues.map((er) => er?.message)
     )
   }
+
   try {
     const { id: owner } = req.userid
     if (!owner) {
       return sendResponse(res, 400, false, "Please login first.")
     }
-    console.log("The owner id is:", owner)
     const { topicId, subtopicId } = req.query
     if (!topicId || !subtopicId) {
-      return sendResponse(res, 400, false, "Please selecet topic and subtopic")
+      return sendResponse(res, 400, false, "Please select topic and subtopic")
     }
-    console.log("The topic and subtopic id is:", { topicId, subtopicId })
     const data = parseResult.data
-    console.log("The data we found is:", data)
-
     const payload = {
       title: data.title,
       description: data.description,
@@ -39,9 +41,13 @@ const createNewRoom = async (req, res) => {
       isPublic: data.isPublic,
       requests: data.requests,
     }
-    const newRoom = new roomSchema(payload)
-    await newRoom.save()
-
+    const newRoom = await roomSchema.create(payload)
+    await roomActivitySchema.create({
+      room_id: newRoom._id,
+      user_id: owner,
+      actions: ROOMLOGS.ROOM_CREATED,
+      details: `Room "${newRoom.title}" created by owner.`,
+    })
     return sendResponse(res, 200, true, "Room Created Successfully.", newRoom)
   } catch (error) {
     console.log("There is an error", error)
@@ -67,10 +73,18 @@ const joinPublicroom = async (req, res) => {
     if (!room.isPublic) {
       return sendResponse(res, 400, false, "Sorry, this room is private.")
     }
-    const isAlreadyMember = room.member.includes(userId)
+    const isAlreadyMember = room.member.some(
+      (mem) => mem._id && mem._id.toString() === userId.toString()
+    )
     if (!isAlreadyMember) {
       room.member.push(userId)
       await room.save()
+      await roomActivitySchema.create({
+        room_id: room_id,
+        user_id: userId,
+        actions: ROOMLOGS.JOINED,
+        details: "User joined this room.",
+      })
       return sendResponse(res, 200, true, "Room joined successfully.")
     }
     return sendResponse(
@@ -124,6 +138,7 @@ const addRoomRules = async (req, res) => {
     )
   }
   try {
+    const { id: owner } = req.userid
     const room_id = req.params.id
     console.log("The room idddddis:", room_id)
     if (!room_id) {
@@ -137,6 +152,12 @@ const addRoomRules = async (req, res) => {
     const newRules = await roomruleSchema.create({ rules: room_rules })
     room.room_rules = newRules._id
     await room.save()
+    await roomActivitySchema.create({
+      room_id: room_id,
+      user: owner,
+      actions: ROOMLOGS.RULE_ADDED,
+      details: "owner added room rules.",
+    })
     return sendResponse(res, 200, true, "Room rules added successfully.", room)
   } catch (error) {
     console.error("Error adding room rules:", error)
@@ -207,6 +228,12 @@ const upgradeRoomRules = async (req, res) => {
       },
       { new: true }
     )
+    await roomActivitySchema.create({
+      room_id: room_id,
+      user_id: userId,
+      actions: ROOMLOGS.RULE_UPDATED,
+      details: "Owner update room rules.",
+    })
     return sendResponse(
       res,
       200,
@@ -216,13 +243,12 @@ const upgradeRoomRules = async (req, res) => {
     )
   } catch (error) {
     console.log("There is an error", error)
-    return sendRespons(res, 500, false, "Server Error", [error?.message])
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
 const allRooms = async (req, res) => {
   try {
     let { limit } = req.query
-
     limit = Number(limit)
     if (isNaN(limit) || limit <= 0) {
       return sendResponse(
@@ -232,7 +258,6 @@ const allRooms = async (req, res) => {
         "Please provide a valid limit (number > 0)."
       )
     }
-
     const rooms = await roomSchema
       .find({})
       .populate("owner", "first_name last_name")
@@ -281,7 +306,6 @@ const changeaccessmode = async (req, res) => {
   const parseResult = roomsValidation
     .pick({ isPublic: true })
     .safeParse(req.body)
-
   if (!parseResult.success) {
     return sendResponse(
       res,
@@ -291,7 +315,6 @@ const changeaccessmode = async (req, res) => {
       parseResult.error.issues.map((err) => err?.message)
     )
   }
-
   try {
     const room_id = req.params.id || req.params.roomId
     const { id: user_id } = req.userid
@@ -308,6 +331,12 @@ const changeaccessmode = async (req, res) => {
     }
     isRoomExist.isPublic = isPublic
     await isRoomExist.save()
+    await roomActivitySchema.create({
+      room_id: room_id,
+      user_id: user_id,
+      actions: ROOMLOGS.ACCESS_CHANGED,
+      details: "owner changed the access mode for room.",
+    })
     return sendResponse(
       res,
       200,
@@ -382,6 +411,12 @@ const updateRoomInfo = async (req, res) => {
         select: "title description",
       },
     ])
+    await roomActivitySchema.create({
+      user_id: user_id,
+      room_id: room_id,
+      actions: ROOMLOGS.ROOM_UPDATED,
+      details: "owner changed the room data.",
+    })
     return sendResponse(
       res,
       200,
@@ -404,7 +439,7 @@ const deleteRoom = async (req, res) => {
     }
     const isRoomExist = await roomSchema.findByIdAndDelete(room_id)
     if (!isRoomExist) {
-      return sendRespons(res, 400, false, "No room found.", null)
+      return sendResponse(res, 400, false, "No room found.", null)
     }
     return sendResponse(res, 200, true, "Room Deleted Successfully")
   } catch (error) {
@@ -447,6 +482,12 @@ const pinMessage = async (req, res) => {
     await isRoomExist.populate({
       path: "pinnedMessages",
       select: "content sender_id createdAt",
+    })
+    await roomActivitySchema.create({
+      user_id: user_id,
+      room_id: room_id,
+      actions: ROOMLOGS.PIN_MESSAGE,
+      details: "message was pinned.",
     })
     return sendResponse(
       res,
@@ -510,6 +551,12 @@ const unpinmessage = async (req, res) => {
       },
     })
 
+    await roomActivitySchema.create({
+      user_id: userId,
+      room_id: room_id,
+      actions: ROOMLOGS.UNPIN_MESSAGE,
+      details: "message was unpined.",
+    })
     return sendResponse(
       res,
       200,
@@ -540,7 +587,11 @@ const makerequest = async (req, res) => {
     if (isRoomExist.isPublic) {
       return sendResponse(res, 400, false, "Room is not private.")
     }
-    const isAlreadyMember = isRoomExist.member.includes(user_id)
+    const isAlreadyMember = isRoomExist.member.some(
+      (me) =>
+        (me.user && me.user.toString() === user_id.toString()) ||
+        (me._id && me._id.toString() === user_id.toString())
+    )
     const isAlreadyRequested = isRoomExist.requests.some(
       (r) => r.user.toString() === user_id.toString()
     )
@@ -657,7 +708,13 @@ const acceptRequest = async (req, res) => {
     room.requests.splice(requestIndex, 1)
     await room.save()
     await room.populate("member", "first_name last_name")
-
+    await roomActivitySchema.create({
+      user_id: ownerId,
+      room_id: roomId,
+      target_user: userId,
+      actions: ROOMLOGS.REQUEST_ACCEPTED,
+      details: "request accepted.",
+    })
     return sendResponse(res, 200, true, "Request accepted successfully.", {
       room_id: room._id,
       room_title: room.title,
@@ -701,6 +758,13 @@ const rejectRequest = async (req, res) => {
     rejectRequest.status = rejectRequest.status = REQUEST_STATUS.REJECTED
     room.requests.splice(requestIndex, 1)
     await room.save()
+    await roomActivitySchema.create({
+      user_id: owner,
+      room_id: roomId,
+      target_user: requestId,
+      actions: ROOMLOGS.REQUEST_REJECTED,
+      details: "Request rejected.",
+    })
     return sendResponse(res, 200, true, "Request rejected successfully", {
       room_id: room._id,
       room_title: room.title,
@@ -755,6 +819,13 @@ const addAdminRole = async (req, res) => {
     room.admins.push(newAdmin)
     room.member.splice(memberIndex, 1)
     await room.save()
+    await roomActivitySchema.create({
+      user_id: owner,
+      target_user: memberId,
+      room_id: roomId,
+      actions: ROOMLOGS.ROLE_ASSIGNED,
+      details: "Role was assigned.",
+    })
     return sendResponse(res, 200, true, "Member promoted to admin.", room)
   } catch (error) {
     console.log("There is an error:", error)
@@ -807,6 +878,13 @@ const updateMemberRole = async (req, res) => {
     room.member.push(updatedMember)
     room.admins.splice(adminIndex, 1)
     await room.save()
+    await roomActivitySchema.create({
+      user_id: userId,
+      room_id: roomId,
+      target_user: adminId,
+      actions: ROOMLOGS.ROLE_UPDATED,
+      details: "Role updated.",
+    })
     return sendResponse(
       res,
       200,
@@ -823,7 +901,6 @@ const updateMemberRole = async (req, res) => {
 const deleteMember = async (req, res) => {
   const { id: userId } = req.userid
   const { memberId, roomId } = req.params
-
   try {
     const validationError = !userId
       ? "Please login first"
@@ -867,10 +944,46 @@ const deleteMember = async (req, res) => {
       room.member.pull(memberId)
     }
     await room.save()
+    await roomActivitySchema.create({
+      user_id: userId,
+      room_id: roomId,
+      target_user: memberId,
+      actions: ROOMLOGS.LEFT,
+      details: "left the room.",
+    })
     return sendResponse(res, 200, true, "Member removed successfully.", room)
   } catch (error) {
     console.error("There is an error:", error)
     return sendResponse(res, 500, false, "Server error", [error?.message])
+  }
+}
+
+const getRoomActivityLogs = async (req, res) => {
+  const { roomId } = req.params
+  const { id: userid } = req.userid
+  console.log("The room id is:", roomId)
+  try {
+    if (!userid) {
+      return sendResponse(res, 400, false, "Please login first.")
+    }
+    const logs = await roomActivitySchema
+      .find({ room_id: roomId })
+      .populate("user_id", "first_name last_name email")
+      .populate("target_user", "first_name last_name email")
+      .sort({ createdAt: -1 })
+
+    return res.status(200).json({
+      success: true,
+      message: "Room activity logs fetched successfully",
+      data: logs,
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching room activity logs",
+      error: error.message,
+    })
   }
 }
 
@@ -894,4 +1007,5 @@ module.exports = {
   addAdminRole,
   updateMemberRole,
   deleteMember,
+  getRoomActivityLogs,
 }

@@ -3,6 +3,7 @@ const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 const messagesValidation = require("../Validations/messages.validation")
 const cloudinary = require("cloudinary").v2
+
 const sendMessages = async (req, res) => {
   const parseResult = messagesValidation.safeParse(req.body)
   if (!parseResult.success) {
@@ -20,6 +21,7 @@ const sendMessages = async (req, res) => {
     if (!userId) {
       return sendResponse(res, 400, false, "Please login to write a message.")
     }
+    console.log("The user id for message is:", userId)
     const room_id = req.params.roomId
     if (!room_id) {
       return sendResponse(res, 400, false, "Please provide room id.")
@@ -28,7 +30,11 @@ const sendMessages = async (req, res) => {
     if (!isRoomExist) {
       return sendResponse(res, 400, false, "No Room Found.")
     }
-    if (!isRoomExist.member.includes(userId)) {
+    if (
+      !isRoomExist.member.some(
+        (me) => me._id && me._id.toString() === userId.toString()
+      )
+    ) {
       return sendResponse(res, 400, false, "You are not a member of this room.")
     }
     let imageData = null

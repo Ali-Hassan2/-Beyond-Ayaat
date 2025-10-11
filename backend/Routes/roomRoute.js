@@ -20,6 +20,7 @@ const {
   addAdminRole,
   updateMemberRole,
   deleteMember,
+  getRoomActivityLogs,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
 const router = express.Router()
@@ -61,7 +62,9 @@ router
 router
   .route("/removeroomconsumer/room/:roomId/membertoremove/:memberId")
   .delete(usermiddle, deleteMember)
-
+router
+  .route("/:roomId/activitylogsforroom")
+  .get(usermiddle, getRoomActivityLogs)
 //searchfilter?topicId?subtopicId
 
 module.exports = router

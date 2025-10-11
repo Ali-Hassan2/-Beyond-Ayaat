@@ -971,7 +971,9 @@ const getRoomActivityLogs = async (req, res) => {
       .populate("user_id", "first_name last_name email")
       .populate("target_user", "first_name last_name email")
       .sort({ createdAt: -1 })
-
+    if (!logs || logs.length === 0) {
+      return sendResponse(res, 400, false, "Sorry no logs found for this room.")
+    }
     return res.status(200).json({
       success: true,
       message: "Room activity logs fetched successfully",
@@ -984,6 +986,67 @@ const getRoomActivityLogs = async (req, res) => {
       message: "Server error while fetching room activity logs",
       error: error.message,
     })
+  }
+}
+
+const getAllFilteredRooms = async (req, res) => {
+  const { topicId, subtopicId, isPublic } = req.query
+
+  try {
+    const filter = {}
+    if (topicId) filter.topicId = topicId
+    if (subtopicId) filter.subtopicId = subtopicId
+    if (typeof isPublic !== "undefined") filter.isPublic = isPublic === "true"
+    const rooms = await roomSchema
+      .find(filter)
+      .populate("owner", "first_name last_name")
+      .populate("requests", "username email")
+      .populate({
+        path: "member.user",
+        select: "first_name last_name",
+      })
+      .populate("room_rules", "rules")
+      .populate("topicId", "title description")
+      .populate("subtopicId", "title description")
+      .populate({
+        path: "messages",
+        select: "sender_id content",
+        populate: {
+          path: "sender_id",
+          select: "first_name last_name",
+        },
+      })
+      .populate({
+        path: "pinnedMessages",
+        select: "content sender_id",
+        populate: {
+          path: "sender_id",
+          select: "first_name last_name",
+        },
+      })
+      .lean()
+    if (!rooms || rooms.length === 0) {
+      return sendResponse(
+        res,
+        404,
+        false,
+        "No rooms found matching the filters."
+      )
+    }
+    const roomWithMemberCount = rooms.map((room) => ({
+      ...room,
+      memberCount: room.member ? room.member.length : 0,
+    }))
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Rooms retrieved successfully.",
+      roomWithMemberCount
+    )
+  } catch (error) {
+    console.error("Error fetching filtered rooms:", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
 
@@ -1008,4 +1071,5 @@ module.exports = {
   updateMemberRole,
   deleteMember,
   getRoomActivityLogs,
+  getAllFilteredRooms,
 }

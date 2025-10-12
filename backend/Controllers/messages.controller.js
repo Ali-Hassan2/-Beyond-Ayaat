@@ -88,7 +88,9 @@ const getAllMessages = async (req, res) => {
     if (!room) {
       return sendResponse(res, 400, false, "No Room Found.")
     }
-    const isMember = room.member.includes(userId)
+    const isMember = room.member.some(
+      (me) => me._id && me._id.toString() === userId.toString()
+    )
     if (!isMember) {
       return sendResponse(res, 403, false, "You are not a member of this room.")
     }
@@ -127,7 +129,11 @@ const editMessage = async (req, res) => {
       return sendResponse(res, 400, false, "Message ID is required.")
     const room = await roomSchema.findById(roomId)
     if (!room) return sendResponse(res, 404, false, "Room not found.")
-    if (!room.member.includes(userId))
+    if (
+      !room.member.some(
+        (me) => me._id && me._id.toString() === userId.toString()
+      )
+    )
       return sendResponse(res, 403, false, "You are not a member of this room.")
     const message = await messagesSchema.findById(messageId)
     if (!message) return sendResponse(res, 404, false, "Message not found.")
@@ -155,23 +161,20 @@ const deleteMessage = async (req, res) => {
     const room_id = req.params.roomId
     const { id: user_id } = req.userid
     const message_id = req.params.messageId
-
     if (!user_id) return sendResponse(res, 400, false, "Please login first.")
     if (!room_id) return sendResponse(res, 400, false, "Please provide roomId.")
     if (!message_id)
       return sendResponse(res, 400, false, "Please provide messageId.")
-
     const isRoomExist = await roomSchema.findById(room_id)
     if (!isRoomExist) return sendResponse(res, 400, false, "No room found.")
-
-    const isMember = isRoomExist.member.includes(user_id)
+    const isMember = isRoomExist.member.find(
+      (r) => r._id.toString() === user_id.toString()
+    )
     if (!isMember)
       return sendResponse(res, 403, false, "Sorry, you are not a member.")
-
     const isMessage = await messagesSchema.findById(message_id)
     if (!isMessage)
       return sendResponse(res, 400, false, "Sorry, message not found.")
-
     const isSender = isMessage.sender_id.toString() === user_id.toString()
     if (!isSender)
       return sendResponse(
@@ -185,8 +188,93 @@ const deleteMessage = async (req, res) => {
       { _id: room_id },
       { $pull: { messages: message_id, pinnedMessages: message_id } }
     )
-
     return sendResponse(res, 200, true, "Message deleted successfully.")
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+const parseReaction = async (req, res) => {
+  const { id: userId } = req.userid
+  const { roomId, messageId } = req.params
+  try {
+    const validationError = !userId
+      ? "Please login first"
+      : !roomId
+        ? "Please provide roomId"
+        : !messageId
+          ? "Please provide messageId"
+          : null
+    if (validationError) return sendResponse(res, 400, false, validationError)
+    const room = await roomSchema.findById(roomId)
+    const message = await messagesSchema.findById(messageId)
+    if (!room) return sendResponse(res, 400, false, "No Room Found.")
+    if (!message) return sendResponse(res, 400, false, "No Message Found.")
+    const isMember =
+      (room.owner && room.owner.toString() === userId) ||
+      room.admins.some((a) => a._id?.toString() === userId) ||
+      room.member.some((m) => m._id?.toString() === userId)
+    if (!isMember)
+      return sendResponse(res, 400, false, "You are not a member of this room.")
+    const { emoji } = req.body
+    if (!emoji) return sendResponse(res, 400, false, "Please provide an emoji.")
+    const existingReaction = message.reactions.find(
+      (r) => r.reacter?.toString() === userId.toString()
+    )
+    if (existingReaction) {
+      existingReaction.emoji = emoji
+    } else {
+      message.reactions.push({ reacter: userId, emoji })
+    }
+    await message.save()
+    return sendResponse(res, 200, true, "Reaction added/updated", message)
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
+
+const removeReaction = async (req, res) => {
+  const { id: userId } = req.userid
+  const { roomId, messageId } = req.params
+  try {
+    const validationError = !userId
+      ? "Please login first"
+      : !roomId
+        ? "Please provide roomId"
+        : !messageId
+          ? "Please provide messageId"
+          : null
+    if (validationError) return sendResponse(res, 400, false, validationError)
+    const room = await roomSchema.findById(roomId)
+    if (!room) return sendResponse(res, 400, false, "No Room Found.")
+    const message = await messagesSchema.findById(messageId)
+    if (!message) return sendResponse(res, 400, false, "No Message Found.")
+    const isMember =
+      (room.owner && room.owner.toString() === userId) ||
+      room.admins.some((a) => a._id?.toString() === userId) ||
+      room.member.some((m) => m._id?.toString() === userId)
+    if (!isMember)
+      return sendResponse(
+        res,
+        400,
+        false,
+        "You have no authority to remove this reaction."
+      )
+    const reactionIndex = message.reactions.findIndex(
+      (r) => r.reacter?.toString() === userId.toString()
+    )
+    if (reactionIndex === -1)
+      return sendResponse(res, 400, false, "No reaction found.")
+    message.reactions.splice(reactionIndex, 1)
+    await message.save()
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Reaction removed successfully",
+      message
+    )
   } catch (error) {
     console.log("There is an error", error)
     return sendResponse(res, 500, false, "Server Error", [error?.message])
@@ -196,10 +284,6 @@ const deleteMessage = async (req, res) => {
 const parseReply = async (req, res) => {}
 
 const deleteReply = async (req, res) => {}
-
-const parseReaction = async (req, res) => {}
-
-const removeReaction = async (req, res) => {}
 
 module.exports = {
   sendMessages,

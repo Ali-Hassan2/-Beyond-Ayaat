@@ -203,6 +203,7 @@ const deleteMessage = async (req, res) => {
 const parseReaction = async (req, res) => {
   const { id: userId } = req.userid
   const { roomId, messageId } = req.params
+
   try {
     const validationError = !userId
       ? "Please login first"
@@ -211,43 +212,105 @@ const parseReaction = async (req, res) => {
         : !messageId
           ? "Please provide messageId"
           : null
-    if (validationError) {
-      return sendResponse(res, 400, false, validationError)
-    }
+    if (validationError) return sendResponse(res, 400, false, validationError)
+
     const room = await roomSchema.findById(roomId)
-    const isMessage = await messagesSchema.findById(messageId)
+    const message = await messagesSchema.findById(messageId)
+
     if (!room) return sendResponse(res, 400, false, "No Room Found.")
-    if (!isMessage) return sendResponse(res, 400, false, "No Message Found.")
+    if (!message) return sendResponse(res, 400, false, "No Message Found.")
+
     const isMember =
       (room.owner && room.owner.toString() === userId) ||
       room.admins.some((a) => a._id?.toString() === userId) ||
       room.member.some((m) => m._id?.toString() === userId)
-    if (!isMember) {
+
+    if (!isMember)
       return sendResponse(res, 400, false, "You are not a member of this room.")
-    }
+
     const { emoji } = req.body
     if (!emoji) return sendResponse(res, 400, false, "Please provide an emoji.")
-    const existingReaction = isMessage.reactions.find(
-      (r) => r.userId?.toString() === userId.toString()
+
+    // 🔹 Check if user already reacted
+    const existingReaction = message.reactions.find(
+      (r) => r.reacter?.toString() === userId.toString()
     )
+
     if (existingReaction) {
+      // Update emoji if already reacted
       existingReaction.emoji = emoji
     } else {
-      isMessage.reactions.push({ userId, emoji })
+      // Only one reaction per user allowed
+      message.reactions.push({ reacter: userId, emoji })
     }
-    await isMessage.save()
-    return sendResponse(res, 200, true, "Reaction added/updated", isMessage)
+
+    await message.save()
+    return sendResponse(res, 200, true, "Reaction added/updated", message)
   } catch (error) {
     console.log("There is an error", error)
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
-const removeReaction = async (req, res) => {}
+
+const removeReaction = async (req, res) => {
+  const { id: userId } = req.userid
+  const { roomId, messageId } = req.params
+
+  try {
+    const validationError = !userId
+      ? "Please login first"
+      : !roomId
+        ? "Please provide roomId"
+        : !messageId
+          ? "Please provide messageId"
+          : null
+    if (validationError) return sendResponse(res, 400, false, validationError)
+
+    const room = await roomSchema.findById(roomId)
+    if (!room) return sendResponse(res, 400, false, "No Room Found.")
+    const message = await messagesSchema.findById(messageId)
+    if (!message) return sendResponse(res, 400, false, "No Message Found.")
+
+    const isMember =
+      (room.owner && room.owner.toString() === userId) ||
+      room.admins.some((a) => a._id?.toString() === userId) ||
+      room.member.some((m) => m._id?.toString() === userId)
+
+    if (!isMember)
+      return sendResponse(
+        res,
+        400,
+        false,
+        "You have no authority to remove this reaction."
+      )
+
+    // 🔹 Match same field name: `reacter`
+    const reactionIndex = message.reactions.findIndex(
+      (r) => r.reacter?.toString() === userId.toString()
+    )
+
+    if (reactionIndex === -1)
+      return sendResponse(res, 400, false, "No reaction found.")
+
+    message.reactions.splice(reactionIndex, 1)
+    await message.save()
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Reaction removed successfully",
+      message
+    )
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
+}
 
 const parseReply = async (req, res) => {}
 
 const deleteReply = async (req, res) => {}
-
 
 module.exports = {
   sendMessages,

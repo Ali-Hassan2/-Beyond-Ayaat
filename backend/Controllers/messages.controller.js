@@ -1,3 +1,5 @@
+const { ROOMLOGS } = require("../constants/constants")
+const roomActivitySchema = require("../Models/activityLogsForRoom.model")
 const messagesSchema = require("../Models/messages.model")
 const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
@@ -227,6 +229,13 @@ const parseReaction = async (req, res) => {
       message.reactions.push({ reacter: userId, emoji })
     }
     await message.save()
+    await roomActivitySchema.create({
+      room_id: roomId,
+      user_id: userId,
+      actions: ROOMLOGS.REACTION_ADDED,
+      target_user: messageId,
+      details: `User ${userId} added a reaction to message: "${message.content}"`,
+    })
     return sendResponse(res, 200, true, "Reaction added/updated", message)
   } catch (error) {
     console.log("There is an error", error)
@@ -268,6 +277,13 @@ const removeReaction = async (req, res) => {
       return sendResponse(res, 400, false, "No reaction found.")
     message.reactions.splice(reactionIndex, 1)
     await message.save()
+    await roomActivitySchema.create({
+      room_id: roomId,
+      user_id: userId,
+      actions: ROOMLOGS.REACTION_REMOVED,
+      target_user: messageId,
+      details: `User ${userId} removed a reaction on message: "${message.content}"`,
+    })
     return sendResponse(
       res,
       200,

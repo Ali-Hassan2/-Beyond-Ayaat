@@ -237,7 +237,6 @@ const parseReaction = async (req, res) => {
 const removeReaction = async (req, res) => {
   const { id: userId } = req.userid
   const { roomId, messageId } = req.params
-
   try {
     const validationError = !userId
       ? "Please login first"
@@ -247,17 +246,14 @@ const removeReaction = async (req, res) => {
           ? "Please provide messageId"
           : null
     if (validationError) return sendResponse(res, 400, false, validationError)
-
     const room = await roomSchema.findById(roomId)
     if (!room) return sendResponse(res, 400, false, "No Room Found.")
     const message = await messagesSchema.findById(messageId)
     if (!message) return sendResponse(res, 400, false, "No Message Found.")
-
     const isMember =
       (room.owner && room.owner.toString() === userId) ||
       room.admins.some((a) => a._id?.toString() === userId) ||
       room.member.some((m) => m._id?.toString() === userId)
-
     if (!isMember)
       return sendResponse(
         res,
@@ -265,18 +261,13 @@ const removeReaction = async (req, res) => {
         false,
         "You have no authority to remove this reaction."
       )
-
-    // 🔹 Match same field name: `reacter`
     const reactionIndex = message.reactions.findIndex(
       (r) => r.reacter?.toString() === userId.toString()
     )
-
     if (reactionIndex === -1)
       return sendResponse(res, 400, false, "No reaction found.")
-
     message.reactions.splice(reactionIndex, 1)
     await message.save()
-
     return sendResponse(
       res,
       200,

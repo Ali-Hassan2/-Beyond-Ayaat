@@ -200,16 +200,54 @@ const deleteMessage = async (req, res) => {
     return sendResponse(res, 500, false, "Server Error", [error?.message])
   }
 }
-
-const parseReply = async (req, res) => {
-  res.send("Please do it.")
+const parseReaction = async (req, res) => {
+  const { id: userId } = req.userid
+  const { roomId, messageId } = req.params
+  try {
+    const validationError = !userId
+      ? "Please login first"
+      : !roomId
+        ? "Please provide roomId"
+        : !messageId
+          ? "Please provide messageId"
+          : null
+    if (validationError) {
+      return sendResponse(res, 400, false, validationError)
+    }
+    const room = await roomSchema.findById(roomId)
+    const isMessage = await messagesSchema.findById(messageId)
+    if (!room) return sendResponse(res, 400, false, "No Room Found.")
+    if (!isMessage) return sendResponse(res, 400, false, "No Message Found.")
+    const isMember =
+      (room.owner && room.owner.toString() === userId) ||
+      room.admins.some((a) => a._id?.toString() === userId) ||
+      room.member.some((m) => m._id?.toString() === userId)
+    if (!isMember) {
+      return sendResponse(res, 400, false, "You are not a member of this room.")
+    }
+    const { emoji } = req.body
+    if (!emoji) return sendResponse(res, 400, false, "Please provide an emoji.")
+    const existingReaction = isMessage.reactions.find(
+      (r) => r.userId?.toString() === userId.toString()
+    )
+    if (existingReaction) {
+      existingReaction.emoji = emoji
+    } else {
+      isMessage.reactions.push({ userId, emoji })
+    }
+    await isMessage.save()
+    return sendResponse(res, 200, true, "Reaction added/updated", isMessage)
+  } catch (error) {
+    console.log("There is an error", error)
+    return sendResponse(res, 500, false, "Server Error", [error?.message])
+  }
 }
+const removeReaction = async (req, res) => {}
+
+const parseReply = async (req, res) => {}
 
 const deleteReply = async (req, res) => {}
 
-const parseReaction = async (req, res) => {}
-
-const removeReaction = async (req, res) => {}
 
 module.exports = {
   sendMessages,

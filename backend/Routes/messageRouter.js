@@ -18,5 +18,9 @@ router.route("/:roomId/messages/:messageId").patch(usermiddle, editMessage)
 router.route("/:roomId/messages/:messageId").delete(usermiddle, deleteMessage)
 router
   .route("/givereaction/room/:roomId/message/:messageId")
-  .post(usermiddle, parseReply)
+  .post(usermiddle, parseReaction)
+router
+  .route("/removereaction/room/:roomId/message/:messageId")
+  .delete(usermiddle, removeReaction)
+
 module.exports = router

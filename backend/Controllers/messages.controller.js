@@ -1,6 +1,6 @@
 const { ROOMLOGS } = require("../constants/constants")
 const roomActivitySchema = require("../Models/activityLogsForRoom.model")
-const messagesSchema = require("../Models/messages.model")
+const messageSchema = require("../Models/messages.model")
 const roomSchema = require("../Models/rooms-mode")
 const sendResponse = require("../Utils/send-response")
 const messagesValidation = require("../Validations/messages.validation")
@@ -55,7 +55,7 @@ const sendMessages = async (req, res) => {
         url: uploadResult.secure_url,
       }
     }
-    const newMessage = await messagesSchema.create({
+    const newMessage = await messageSchema.create({
       sender_id: userId,
       room_id: room_id,
       content: parseResult.data.content,
@@ -137,7 +137,7 @@ const editMessage = async (req, res) => {
       )
     )
       return sendResponse(res, 403, false, "You are not a member of this room.")
-    const message = await messagesSchema.findById(messageId)
+    const message = await messageSchema.findById(messageId)
     if (!message) return sendResponse(res, 404, false, "Message not found.")
     if (message.content === content)
       return sendResponse(
@@ -146,7 +146,7 @@ const editMessage = async (req, res) => {
         false,
         "Please modify content before saving."
       )
-    await messagesSchema.findByIdAndUpdate(
+    await messageSchema.findByIdAndUpdate(
       messageId,
       { content },
       { new: true }
@@ -174,7 +174,7 @@ const deleteMessage = async (req, res) => {
     )
     if (!isMember)
       return sendResponse(res, 403, false, "Sorry, you are not a member.")
-    const isMessage = await messagesSchema.findById(message_id)
+    const isMessage = await messageSchema.findById(message_id)
     if (!isMessage)
       return sendResponse(res, 400, false, "Sorry, message not found.")
     const isSender = isMessage.sender_id.toString() === user_id.toString()
@@ -185,7 +185,7 @@ const deleteMessage = async (req, res) => {
         false,
         "Only sender can delete this message."
       )
-    await messagesSchema.findByIdAndDelete(message_id)
+    await messageSchema.findByIdAndDelete(message_id)
     await roomSchema.updateOne(
       { _id: room_id },
       { $pull: { messages: message_id, pinnedMessages: message_id } }
@@ -209,7 +209,7 @@ const parseReaction = async (req, res) => {
           : null
     if (validationError) return sendResponse(res, 400, false, validationError)
     const room = await roomSchema.findById(roomId)
-    const message = await messagesSchema.findById(messageId)
+    const message = await messageSchema.findById(messageId)
     if (!room) return sendResponse(res, 400, false, "No Room Found.")
     if (!message) return sendResponse(res, 400, false, "No Message Found.")
     const isMember =
@@ -257,7 +257,7 @@ const removeReaction = async (req, res) => {
     if (validationError) return sendResponse(res, 400, false, validationError)
     const room = await roomSchema.findById(roomId)
     if (!room) return sendResponse(res, 400, false, "No Room Found.")
-    const message = await messagesSchema.findById(messageId)
+    const message = await messageSchema.findById(messageId)
     if (!message) return sendResponse(res, 400, false, "No Message Found.")
     const isMember =
       (room.owner && room.owner.toString() === userId) ||

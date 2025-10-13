@@ -76,6 +76,8 @@ const ROOMLOGS = Object.freeze({
   UNPIN_MESSAGE: "unpin_message",
   REACTION_ADDED: "reaction_added",
   REACTION_REMOVED: "reaction_removed",
+  GIVE_REPLY: "give_reply",
+  DELETE_REPLY: "delete_reply",
 })
 
 module.exports = {

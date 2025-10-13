@@ -16,7 +16,6 @@ class UserGrowthOverTime {
         },
         { $sort: { "_id.year": 1, "_id.month": 1 } },
       ])
-
       const formattedGrowthData = usergrowthdata.map((item) => ({
         month: new Date(item._id.year, item._id.month - 1).toLocaleString(
           "en",

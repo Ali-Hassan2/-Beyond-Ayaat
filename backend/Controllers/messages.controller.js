@@ -146,11 +146,7 @@ const editMessage = async (req, res) => {
         false,
         "Please modify content before saving."
       )
-    await messageSchema.findByIdAndUpdate(
-      messageId,
-      { content },
-      { new: true }
-    )
+    await messageSchema.findByIdAndUpdate(messageId, { content }, { new: true })
     return sendResponse(res, 200, true, "Message updated successfully.")
   } catch (error) {
     console.error("Error editing message:", error)

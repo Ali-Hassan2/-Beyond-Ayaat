@@ -10,7 +10,10 @@ const {
   deleteReply,
 } = require("../Controllers/messages.controller")
 const { giveReply } = require("../Controllers/threads.controller")
+const thread = require("../Controllers/threads.controller")
 const router = express.Router()
+
+const threadClass = new thread()
 
 router.route("/:roomId/messages").post(usermiddle, sendMessages)
 router.route("/:roomId/messages").get(usermiddle, getAllMessages)
@@ -24,6 +27,9 @@ router
   .delete(usermiddle, removeReaction)
 router
   .route("/givereply/room/:roomId/message/:messageId")
-  .post(usermiddle, giveReply)
+  .post(usermiddle, (req, res) => threadClass.parseReply(req, res))
+router
+  .route("/deletereply/room/:roomId/message/:messageId/reply/:replyId")
+  .delete(usermiddle, (req, res) => threadClass.deleteReply(req, res))
 
 module.exports = router

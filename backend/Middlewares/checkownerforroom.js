@@ -14,6 +14,7 @@ const checkOwner = async (req, res, next) => {
     if (!room_finded) {
       return sendResponse(res, 200, false, "No Room Founded.")
     }
+    console.log(`Yes this room exist: ${room_finded.title}`)
     if (room_finded.owner.toString() !== userId) {
       return sendResponse(res, 400, false, "Forbbiden", {
         message: "You are not the owner of the Room.",

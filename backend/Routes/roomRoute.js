@@ -16,10 +16,14 @@ const {
   pinMessage,
   unpinmessage,
   makerequest,
-  getAllrequestsWithStatus,
   getMyRequests,
+  addAdminRole,
+  updateMemberRole,
+  deleteMember,
+  getAllFilteredRooms,
 } = require("../Controllers/rooms.Controller")
 const checkOwner = require("../Middlewares/checkownerforroom")
+const getRoomActivityLogs = require("../Controllers/activity-logs-room.controller")
 const router = express.Router()
 
 router.route("/createnewroom").post(usermiddle, createNewRoom)
@@ -45,8 +49,22 @@ router.route("/deleteroom/:id").delete(usermiddle, checkOwner, deleteRoom)
 router.route("/:roomId/createrequest").post(usermiddle, makerequest)
 router.route("/getallyourrequestswithstatus").get(usermiddle, getMyRequests)
 router
-  .route("/acceptuserroomrequest/room/:roomId/user/:userId")
+  .route("/acceptuserroomrequest/room/:roomId/request/:userId")
   .put(usermiddle, checkOwner, acceptRequest)
-router.route("/rejectrequest").post(checkOwner, usermiddle, rejectRequest)
-
+router
+  .route("/rejectrequest/room/:roomId/request/:requestId")
+  .patch(usermiddle, checkOwner, rejectRequest)
+router
+  .route("/addadninroleformember/room/:roomId/member/:memberId")
+  .post(usermiddle, checkOwner, addAdminRole)
+router
+  .route("/changeadminroletomember/room/:roomId/admin/:adminId")
+  .patch(usermiddle, updateMemberRole)
+router
+  .route("/removeroomconsumer/room/:roomId/membertoremove/:memberId")
+  .delete(usermiddle, deleteMember)
+router
+  .route("/:roomId/activitylogsforroom")
+  .get(usermiddle, getRoomActivityLogs)
+router.route("/getfilterrooms").get(getAllFilteredRooms)
 module.exports = router

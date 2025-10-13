@@ -16,6 +16,7 @@ const userProfileRouter = require("./Routes/user-profile")
 const reportsRouter = require("./Routes/reportRoute")
 const roomsRouter = require("./Routes/roomRoute")
 const messsagesRouter = require("./Routes/messageRouter")
+const userAnalyticsRouter = require("./Routes/user-analytics.route")
 
 const app = express()
 dotenv.config()
@@ -52,6 +53,7 @@ app.use("/userprofile/ba", userProfileRouter)
 app.use("/reports/rc", reportsRouter)
 app.use("/rooms/mdmr", roomsRouter)
 app.use("/msg", messsagesRouter)
+app.use("/analytics/user", userAnalyticsRouter)
 
 // server setup
 app.get("/", (req, res) => {

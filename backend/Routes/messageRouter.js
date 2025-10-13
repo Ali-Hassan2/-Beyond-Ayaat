@@ -8,22 +8,28 @@ const {
   parseReaction,
   removeReaction,
   deleteReply,
-  parseReply,
 } = require("../Controllers/messages.controller")
+const { giveReply } = require("../Controllers/threads.controller")
+const thread = require("../Controllers/threads.controller")
 const router = express.Router()
+
+const threadClass = new thread()
 
 router.route("/:roomId/messages").post(usermiddle, sendMessages)
 router.route("/:roomId/messages").get(usermiddle, getAllMessages)
 router.route("/:roomId/messages/:messageId").patch(usermiddle, editMessage)
 router.route("/:roomId/messages/:messageId").delete(usermiddle, deleteMessage)
-router.route("/:roomId/parsereply/:messageId").post(usermiddle, parseReply)
 router
-  .route("/:roomId/deletereply/:messagId/reply/:replyId")
-  .delete(usermiddle, deleteReply)
-router
-  .route("/:roomId/parsereaction/:messageId")
+  .route("/givereaction/room/:roomId/message/:messageId")
   .post(usermiddle, parseReaction)
 router
-  .route("/:roomId/deletereaction/:messageId/reactions/:reactionId")
+  .route("/removereaction/room/:roomId/message/:messageId")
   .delete(usermiddle, removeReaction)
+router
+  .route("/givereply/room/:roomId/message/:messageId")
+  .post(usermiddle, (req, res) => threadClass.parseReply(req, res))
+router
+  .route("/deletereply/room/:roomId/message/:messageId/reply/:replyId")
+  .delete(usermiddle, (req, res) => threadClass.deleteReply(req, res))
+
 module.exports = router

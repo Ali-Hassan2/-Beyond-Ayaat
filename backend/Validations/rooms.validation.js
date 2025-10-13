@@ -21,6 +21,11 @@ const pinnedMessagesValidation = z
   .nullable()
   .default([])
   .optional()
+const adminRolevalidation = z
+  .array(z.string())
+  .nullable()
+  .default([])
+  .optional()
 const roomsValidation = z.object({
   title: titleValidation,
   description: descriptionValidation,
@@ -33,6 +38,7 @@ const roomsValidation = z.object({
   room_rules: room_rulesValidation,
   messages: messagesValidation,
   pinnedMessages: pinnedMessagesValidation,
+  admins: adminRolevalidation,
 })
 
 module.exports = roomsValidation

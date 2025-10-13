@@ -1,6 +1,7 @@
 #!/bin/bash
-echo 
+echo "**************************"
 echo "**** GIT PUSH SCRIPT ****"
+echo "**************************"
 git add .
 count=0
 limit=5

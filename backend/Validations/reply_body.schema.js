@@ -1,13 +1,9 @@
 const z = require("zod")
 
-const replyBodyValidation = z
-  .array(z.string())
-  .nullable()
-  .default([])
-  .optional()
+const replyBodyValidation = z.string().trim()
 
 const repliesValidation = z.object({
-  reply: replyBodyValidation,
+  content: replyBodyValidation,
 })
 
 module.exports = repliesValidation

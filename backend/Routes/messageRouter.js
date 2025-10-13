@@ -8,8 +8,8 @@ const {
   parseReaction,
   removeReaction,
   deleteReply,
-  parseReply,
 } = require("../Controllers/messages.controller")
+const { giveReply } = require("../Controllers/threads.controller")
 const router = express.Router()
 
 router.route("/:roomId/messages").post(usermiddle, sendMessages)
@@ -22,5 +22,8 @@ router
 router
   .route("/removereaction/room/:roomId/message/:messageId")
   .delete(usermiddle, removeReaction)
+router
+  .route("/givereply/room/:roomId/message/:messageId")
+  .post(usermiddle, giveReply)
 
 module.exports = router

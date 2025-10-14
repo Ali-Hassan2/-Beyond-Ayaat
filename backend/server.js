@@ -18,6 +18,7 @@ const roomsRouter = require("./endpoints/roomRoute")
 const messsagesRouter = require("./endpoints/messageRouter")
 const userAnalyticsRouter = require("./endpoints/user-analytics.route")
 const blogsAnalyticsRouter = require("./endpoints/blogs-analytics.route")
+const roomAnalyticsRouter = require("./endpoints/rooms-analytics")
 
 const app = express()
 dotenv.config()
@@ -55,7 +56,8 @@ app.use("/reports/rc", reportsRouter)
 app.use("/rooms/mdmr", roomsRouter)
 app.use("/msg", messsagesRouter)
 app.use("/analytics/user", userAnalyticsRouter)
-app.use("/analytics/blogs",blogsAnalyticsRouter)
+app.use("/analytics/blogs", blogsAnalyticsRouter)
+app.use("/analytics/rooms", roomAnalyticsRouter)
 
 // server setup
 app.get("/", (req, res) => {

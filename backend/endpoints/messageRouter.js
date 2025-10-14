@@ -1,0 +1,35 @@
+const express = require("express")
+const usermiddle = require("../interceptors/usermiddleware")
+const {
+  sendMessages,
+  getAllMessages,
+  editMessage,
+  deleteMessage,
+  parseReaction,
+  removeReaction,
+  deleteReply,
+} = require("../services/messages.controller")
+const { giveReply } = require("../services/threads.controller")
+const thread = require("../services/threads.controller")
+const router = express.Router()
+
+const threadClass = new thread()
+
+router.route("/:roomId/messages").post(usermiddle, sendMessages)
+router.route("/:roomId/messages").get(usermiddle, getAllMessages)
+router.route("/:roomId/messages/:messageId").patch(usermiddle, editMessage)
+router.route("/:roomId/messages/:messageId").delete(usermiddle, deleteMessage)
+router
+  .route("/givereaction/room/:roomId/message/:messageId")
+  .post(usermiddle, parseReaction)
+router
+  .route("/removereaction/room/:roomId/message/:messageId")
+  .delete(usermiddle, removeReaction)
+router
+  .route("/givereply/room/:roomId/message/:messageId")
+  .post(usermiddle, (req, res) => threadClass.parseReply(req, res))
+router
+  .route("/deletereply/room/:roomId/message/:messageId/reply/:replyId")
+  .delete(usermiddle, (req, res) => threadClass.deleteReply(req, res))
+
+module.exports = router

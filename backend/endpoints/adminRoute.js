@@ -1,0 +1,19 @@
+const express = require("express")
+const {
+  adminLogin,
+  adminSignup,
+  logout,
+  getadmins,
+  deleteadmin,
+  updateadmin,
+} = require("../services/adminController")
+const { adminmiddle } = require("../interceptors/adminmiddleware")
+const router = express.Router()
+
+router.post("/login", adminLogin)
+router.post("/signup", adminmiddle, adminSignup)
+router.post("/logout", adminmiddle, logout)
+router.get("/amgm/getadmins", adminmiddle, getadmins)
+router.delete("/amgm/deleteadmin/:id", adminmiddle, deleteadmin)
+router.put("/amgm/updateadmin/:id", adminmiddle, updateadmin)
+module.exports = router
